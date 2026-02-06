@@ -1,0 +1,6 @@
+---
+# Vault variables — create vault.yml with:
+#   ansible-vault create inventory/group_vars/all/vault.yml
+#
+# Required variables:
+vault_proxmox_password: "YOUR_PROXMOX_ROOT_PASSWORD"

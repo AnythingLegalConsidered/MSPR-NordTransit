@@ -36,7 +36,7 @@ networks:
     dns_primary: "10.100.0.10"
 
 # --- Cle SSH pour cloud-init (WMS) ---
-ssh_public_key: "ssh-ed25519 CHANGEME ianis@workstation"  # TODO: remplacer
+ssh_public_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIL5jhQ4BIAX4E+jfFXkIxzi28HBpA9z2DG4hHfmFBkm+ dharma@DESKTOP-REB5AV3"
 
 # --- Credentials Lab (acceptables pour un lab, PAS pour la prod) ---
 lab_password: "P@ssw0rd!"
@@ -59,6 +59,7 @@ lab_vms:
     net:
       net0: "virtio,bridge=vmbr1,firewall=0"
       net1: "virtio,bridge=vmbr2,firewall=0"
+      net2: "virtio,bridge=vmbr0,firewall=0"  # acces internet reel (NAT)
     ip: "172.16.132.1"
     start_order: 1
     start_delay: 30

@@ -80,18 +80,19 @@
         fail_msg: "RAM insuffisante : {{ ram_available.stdout }} Mo dispo, besoin de 22000 Mo"
         success_msg: "RAM OK : {{ ram_available.stdout }} Mo disponibles"
 
-    # -- Verifier l'espace disque --
-    - name: "Verifier espace disque"
-      ansible.builtin.shell: df -BG /var/lib/vz | tail -1 | awk '{print $4}' | tr -d 'G'
+    # -- Verifier l'espace disque (local-lvm = thin provisioning) --
+    - name: "Verifier espace disque local-lvm"
+      ansible.builtin.shell: >
+        pvesm status | awk '/local-lvm/{printf "%.0f", $6 / 1048576}'
       register: disk_available
       changed_when: false
 
-    - name: "Espace disque suffisant (besoin de 200 Go minimum)"
+    - name: "Espace disque suffisant (besoin de 200 Go minimum sur local-lvm)"
       ansible.builtin.assert:
         that:
           - disk_available.stdout | int >= 200
-        fail_msg: "Espace insuffisant : {{ disk_available.stdout }} Go dispo, besoin de 200 Go"
-        success_msg: "Espace disque OK : {{ disk_available.stdout }} Go disponibles"
+        fail_msg: "Espace insuffisant : {{ disk_available.stdout }} Go dispo sur local-lvm, besoin de 200 Go"
+        success_msg: "Espace disque OK : {{ disk_available.stdout }} Go disponibles sur local-lvm"
 
     # -- Verifier proxmoxer (dependance Python) --
     - name: "Verifier module Python proxmoxer"
