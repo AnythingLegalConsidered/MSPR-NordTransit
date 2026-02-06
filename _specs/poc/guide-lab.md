@@ -1,53 +1,115 @@
 # Guide Lab Proxmox
 
-> Comment utiliser l'environnement de test
+> Reference rapide pour l'equipe
+
+> **CREDENTIALS DE LAB UNIQUEMENT** - Ces identifiants sont destines au lab de test. NE PAS utiliser en production !
 
 ---
 
-## Accès au Lab
+## Acces au Lab
 
 | Information | Valeur |
-| --- | --- |
+|---|---|
 | Plateforme | Proxmox VE |
-| VMID réservés | 32000-32100 |
-| Réseau Lab | 172.16.132.0/24 |
+| VMID reserves | 32000-32100 |
+| Reseau Siege | 172.16.132.0/24 (vmbr1) |
+| Reseau Azure | 10.100.0.0/24 (vmbr2) |
 
 ---
 
-## Mapping Lab ↔ Production
+## Inventaire VMs
 
-| VM Lab | IP Lab | Équipement Prod | IP Prod |
-| --- | --- | --- | --- |
-| FW-SIEGE | 172.16.132.1 | FortiGate 80D | 192.168.10.254 |
-| FW-WH1 | 172.16.132.2 | DrayTek Vigor | 192.168.20.254 |
-| FW-WH2 | 172.16.132.3 | DrayTek Vigor | 192.168.30.254 |
-| FW-WH3 | 172.16.132.4 | DrayTek Vigor | 192.168.40.254 |
-| FW-CDK | 172.16.132.5 | Cross-dock | 192.168.50.254 |
-| DC01 | 172.16.132.10 | DC01 | 192.168.10.10 |
-| DC02 | 172.16.132.11 | DC02 | 192.168.10.11 |
-| DC-AZURE | 172.16.132.12 | DC Azure | 10.x.x.x |
-| WMS-APP | 172.16.132.20 | WMS-APP | 192.168.10.22 |
-| WMS-DB | 172.16.132.21 | WMS-DB | 192.168.10.21 |
-| IPBX | 172.16.132.30 | IPBX-VM | 192.168.10.40 |
-| SUPERVISION | 172.16.132.40 | SUPER-01 | 192.168.10.50 |
+| VMID | Nom | OS | IP | RAM | Role |
+|---|---|---|---|---|---|
+| 32001 | FW-SIEGE | pfSense | 172.16.132.1 | 2 Go | Firewall + QoS + VPN |
+| 32005 | FW-AZURE | pfSense | 10.100.0.1 | 2 Go | Cote Azure du tunnel |
+| 32010 | DC01 | Win Server 2022 | 172.16.132.10 | 4 Go | AD principal |
+| 32011 | DC02 | Win Server 2022 | 172.16.132.11 | 4 Go | AD secondaire |
+| 32012 | DC-AZURE | Win Server 2022 | 10.100.0.10 | 4 Go | DC cloud |
+| 32020 | WMS | Ubuntu 22.04 | 172.16.132.20 | 2 Go | Simulation WMS |
+| 32030 | IPBX | FreePBX | 172.16.132.30 | 2 Go | Telephonie VoIP |
+
+**Total : 7 VMs, ~20 Go RAM**
 
 ---
 
-## Quick Start
+## Credentials
 
-### Étape 1 : Créer la VM pfSense (30 min)
-1. Nouvelle VM, VMID 32001
-2. ISO pfSense
-3. 2 Go RAM, 2 vCPU
-4. 2 interfaces réseau (WAN + LAN)
+| Systeme | Acces | Login | Password |
+|---|---|---|---|
+| Proxmox | https://proxmox.local:8006 | root | (votre mdp) |
+| pfSense Siege | https://172.16.132.1 | admin | pfsense |
+| pfSense Azure | https://10.100.0.1 | admin | pfsense |
+| FreePBX | http://172.16.132.30 | admin | (a definir) |
+| Windows AD | RDP | Administrator | P@ssw0rd! |
+| Ubuntu WMS | SSH | wmsadmin | P@ssw0rd! |
+| VPN IPsec | PSK | - | MSPR-VPN-2024! |
 
-### Étape 2 : Créer DC01 (45 min)
-1. Nouvelle VM, VMID 32010
-2. ISO Windows Server 2022
-3. 4 Go RAM, 2 vCPU
-4. Installer AD DS, DNS
+---
 
-### Étape 3 : Configurer le réseau (30 min)
-1. Configurer pfSense (IP, DHCP)
-2. Joindre DC01 au domaine
-3. Tester la connectivité
+## Ce qu'on demontre
+
+| POC | Ce qu'on prouve | Critere de succes |
+|---|---|---|
+| **QoS VoIP** | Voix prioritaire sous charge | Latence < 150ms, Gigue < 30ms, Perte < 1% |
+| **Failover AD** | DC02 prend le relais | Bascule < 15 min, Auth OK |
+| **Failover WMS** | VM redemarre automatiquement | Donnees MySQL intactes |
+| **Tunnel Azure** | Connectivite siege <-> cloud | Ping + DNS cross-site OK |
+
+---
+
+## Commandes utiles
+
+### pfSense (SSH)
+```bash
+# Verifier queues QoS
+pfctl -s queue
+
+# Verifier tunnel IPsec
+ipsec statusall
+```
+
+### Windows AD (PowerShell)
+```powershell
+# Lister les DC
+Get-ADDomainController -Filter *
+
+# Etat replication
+repadmin /replsummary
+
+# Quel DC repond ?
+nltest /dsgetdc:lab.local
+
+# Sante AD
+dcdiag /s:DC01
+```
+
+### Ubuntu WMS (SSH)
+```bash
+# Test MySQL
+mysql -u root -e "SELECT * FROM wms_test.inventory;"
+
+# Verifier services
+systemctl status mysql
+```
+
+### Tests reseau
+```powershell
+# Ping cross-site
+ping 10.100.0.10
+
+# DNS cross-site
+nslookup dc-azure.azure.local
+```
+
+---
+
+## Repartition equipe
+
+| Role | Responsabilites |
+|---|---|
+| **P1** | Setup reseau + pfSense siege + DC01 |
+| **P2** | DC02 + replication + failover AD |
+| **P3** | IPBX + QoS + test VoIP |
+| **P4** | Azure (FW + DC) + tunnel IPsec |
+| **P5** | WMS + documentation + captures |

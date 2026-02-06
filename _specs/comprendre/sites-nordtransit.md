@@ -1,97 +1,97 @@
 # Sites NordTransit
 
-> Détail de chaque site et ses spécificités
+> Detail de chaque site et ses specificites
 
 ---
 
-## Siège Social - Lille
+## Siege Social - Lille
 
 | Information | Valeur |
-| --- | --- |
-| Réseau | 192.168.10.0/24 |
-| Passerelle | 192.168.10.254 |
+|---|---|
+| Reseau | 192.168.10.0/24 |
+| Passerelle | 192.168.10.1 |
 | Pare-feu | FortiGate 80D |
-| Rôle | Services centraux, hébergement VMs |
+| Role | Services centraux, hebergement VMs |
 
-### Équipements clés
+### Equipements cles
 - Hyperviseur Dell R630 (toutes les VMs critiques)
 - NAS 6 To RAID5
 - Passerelle SIP
-- ~25 téléphones Cisco IP
+- ~25 telephones Cisco IP
 
-### Services hébergés
+### Services heberges
 - Active Directory (DC01, DC02)
-- WMS (Application + Base de données)
-- IPBX (téléphonie)
+- WMS (Application + Base de donnees)
+- IPBX (telephonie)
 - Supervision
 
 ---
 
-## WH1 - Entrepôt Lens
+## WH1 - Entrepot Lens
 
 | Information | Valeur |
-| --- | --- |
-| Réseau | 192.168.20.0/24 |
-| Passerelle | 192.168.20.254 |
+|---|---|
+| Reseau | 192.168.20.0/24 |
+| Passerelle | 192.168.20.1 |
 | Pare-feu | DrayTek Vigor 2860 |
-| Lien | ~200 Mbps managé |
+| Lien | ~200 Mbps manage |
 
-### Équipements
-- ~15 PC / Terminaux légers
-- ~15 téléphones IP
+### Equipements
+- ~15 PC / Terminaux legers
+- ~15 telephones IP
 - ~10 terminaux RF (Wi-Fi)
-- ~3 imprimantes étiquettes
+- ~3 imprimantes etiquettes
 
-> **Problème identifié : Pas de lien de secours**
+> **Probleme identifie : Pas de lien de secours**
 
 ---
 
-## WH2 - Entrepôt Valenciennes
+## WH2 - Entrepot Valenciennes
 
 | Information | Valeur |
-| --- | --- |
-| Réseau | 192.168.30.0/24 |
-| Passerelle | 192.168.30.254 |
+|---|---|
+| Reseau | 192.168.30.0/24 |
+| Passerelle | 192.168.30.1 |
 | Pare-feu | DrayTek Vigor 2860 |
-| Lien | ~200 Mbps managé |
+| Lien | ~200 Mbps manage |
 
-### Équipements
-- ~15 PC / Terminaux légers
-- ~15 téléphones IP
+### Equipements
+- ~15 PC / Terminaux legers
+- ~15 telephones IP
 - ~10 terminaux RF (Wi-Fi)
-- ~3 imprimantes étiquettes
+- ~3 imprimantes etiquettes
 
-> **Problème identifié : QoS/VLAN non documentés**
+> **Probleme identifie : QoS/VLAN non documentes**
 
 ---
 
-## WH3 - Entrepôt Arras
+## WH3 - Entrepot Arras
 
 | Information | Valeur |
-| --- | --- |
-| Réseau | 192.168.40.0/24 |
-| Passerelle | 192.168.40.254 |
+|---|---|
+| Reseau | 192.168.40.0/24 |
+| Passerelle | 192.168.40.1 |
 | Pare-feu | DrayTek Vigor 2860 |
-| Lien | ~200 Mbps managé |
+| Lien | ~200 Mbps manage |
 
-### Équipements
-- ~15 PC / Terminaux légers
-- ~15 téléphones IP
+### Equipements
+- ~15 PC / Terminaux legers
+- ~15 telephones IP
 - ~10 terminaux RF (Wi-Fi)
-- ~3 imprimantes étiquettes
+- ~3 imprimantes etiquettes
 
-> **Spécificité : Impression/étiquettes particulièrement critique sur ce site**
+> **Specificite : Impression/etiquettes particulierement critique sur ce site**
 
 ---
 
 ## Cross-dock (Saisonnier)
 
 | Information | Valeur |
-| --- | --- |
-| Réseau | 192.168.50.0/24 |
-| Passerelle | 192.168.50.254 |
-| Équipement | Switch 24 ports basique |
+|---|---|
+| Reseau | 192.168.50.0/24 |
+| Passerelle | 192.168.50.1 |
+| Equipement | Switch 24 ports basique |
 | Activation | Pics e-commerce, soldes |
 
-> **Site saisonnier** - Moyens IT volontairement réduits
-> Activé uniquement pendant les périodes de forte activité
+> **Site saisonnier** - Moyens IT volontairement reduits
+> Active uniquement pendant les periodes de forte activite
