@@ -1,0 +1,60 @@
+---
+# =============================================================================
+# 99-teardown.yml — Suppression complete du lab
+# Arrete et detruit les 7 VMs pour recommencer a zero
+# Usage : ansible-playbook playbooks/99-teardown.yml
+# =============================================================================
+
+- name: "Teardown — Supprimer tout le lab"
+  hosts: proxmox
+  gather_facts: false
+
+  tasks:
+    - name: "ATTENTION — Confirmation avant destruction"
+      ansible.builtin.pause:
+        prompt: |
+          =============================================
+          ATTENTION : Cette action va SUPPRIMER les 7 VMs du lab !
+          VMID 32001, 32005, 32010, 32011, 32012, 32020, 32030
+          Toutes les donnees seront perdues.
+          =============================================
+          Appuyer sur Entree pour confirmer, Ctrl+C pour annuler
+
+    - name: "Arreter toutes les VMs"
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "{{ proxmox_api_user }}"
+        api_password: "{{ proxmox_api_password }}"
+        node: "{{ proxmox_node }}"
+        vmid: "{{ item.vmid }}"
+        state: stopped
+        force: true
+      loop: "{{ lab_vms }}"
+      loop_control:
+        label: "Stop {{ item.name }} ({{ item.vmid }})"
+      ignore_errors: true  # VM peut deja etre arretee
+
+    - name: "Attendre 10s — arret propre"
+      ansible.builtin.pause:
+        seconds: 10
+
+    - name: "Supprimer toutes les VMs"
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "{{ proxmox_api_user }}"
+        api_password: "{{ proxmox_api_password }}"
+        node: "{{ proxmox_node }}"
+        vmid: "{{ item.vmid }}"
+        state: absent
+      loop: "{{ lab_vms }}"
+      loop_control:
+        label: "Delete {{ item.name }} ({{ item.vmid }})"
+      ignore_errors: true  # VM peut ne pas exister
+
+    - name: "Teardown termine"
+      ansible.builtin.debug:
+        msg: |
+          =============================================
+          LAB SUPPRIME — Tout est propre
+          =============================================
+          Pour recreer : ansible-playbook playbooks/01-create-vms.yml

@@ -72,8 +72,9 @@ Sur pfSense → Firewall → Traffic Shaper :
 
 **Pourquoi** : Il faut saturer le reseau pour prouver que la QoS protege la VoIP.
 
-Depuis le WMS ou un autre poste :
+Depuis le WMS (iperf3 installe au guide 06) :
 ```bash
+# Prereq : iperf3 doit etre installe sur WMS (fait au guide 06-wms-simulation.md)
 # Generer du trafic "lourd" (simuler charge reseau)
 iperf3 -c 172.16.132.1 -t 60 -b 100M
 ```

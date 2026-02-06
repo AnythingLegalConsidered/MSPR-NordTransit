@@ -41,4 +41,15 @@ dist/
 build/
 
 # Claude Code
-.claude/plans/
+.claude/
+
+# Fichiers generes (PDF/DOCX)
+output/
+
+# Artefact Windows
+nul
+
+# Ansible vault
+*.vault_pass
+configs/ansible/.vault_pass
+configs/ansible/vault.yml

@@ -1,0 +1,162 @@
+---
+# =============================================================================
+# MSPR NordTransit — Variables Lab Proxmox
+# Toutes les specs VMs, reseaux, ISOs centralisees ici
+# =============================================================================
+
+# --- Connexion Proxmox API ---
+proxmox_api_host: "{{ ansible_host }}"
+proxmox_api_user: "root@pam"
+proxmox_api_password: "{{ vault_proxmox_password }}"  # dans ansible-vault
+proxmox_node: "pve02"  # nom du noeud dans Proxmox (ajuster si ecole)
+
+# --- Stockage Proxmox ---
+proxmox_storage_vms: "local-lvm"    # stockage disques VMs
+proxmox_storage_iso: "local"        # stockage ISOs
+proxmox_storage_snippets: "local"   # stockage cloud-init snippets
+
+# --- ISOs requises (a telecharger sur le Proxmox avant) ---
+iso_pfsense: "pfSense-CE-2.7.2-RELEASE-amd64.iso"
+iso_windows: "SERVER_EVAL_x64FRE_en-us.iso"
+iso_ubuntu: "ubuntu-22.04.4-live-server-amd64.iso"
+iso_freepbx: "SNG7-PBX16-64bit-2302-1.iso"
+
+# --- Reseaux Lab ---
+networks:
+  siege:
+    bridge: "vmbr1"
+    subnet: "172.16.132.0/24"
+    gateway: "172.16.132.1"
+    dns_primary: "172.16.132.10"
+    dns_secondary: "172.16.132.11"
+  azure:
+    bridge: "vmbr2"
+    subnet: "10.100.0.0/24"
+    gateway: "10.100.0.1"
+    dns_primary: "10.100.0.10"
+
+# --- Cle SSH pour cloud-init (WMS) ---
+ssh_public_key: "ssh-ed25519 CHANGEME ianis@workstation"  # TODO: remplacer
+
+# --- Credentials Lab (acceptables pour un lab, PAS pour la prod) ---
+lab_password: "P@ssw0rd!"
+ad_domain: "lab.local"
+ad_netbios: "LAB"
+vpn_psk: "MSPR-VPN-2024!"
+
+# --- Definition des 7 VMs ---
+lab_vms:
+  # -- Firewalls pfSense --
+  - vmid: 32001
+    name: "FW-SIEGE"
+    description: "Firewall central siege — simule FortiGate 100F"
+    ostype: "other"           # pfSense = FreeBSD
+    iso: "{{ iso_pfsense }}"
+    cores: 1
+    memory: 2048
+    balloon: 1024
+    disk_size: "8G"
+    net:
+      net0: "virtio,bridge=vmbr1,firewall=0"
+      net1: "virtio,bridge=vmbr2,firewall=0"
+    ip: "172.16.132.1"
+    start_order: 1
+    start_delay: 30
+
+  - vmid: 32005
+    name: "FW-AZURE"
+    description: "Firewall cote Azure — simule Azure VPN Gateway"
+    ostype: "other"
+    iso: "{{ iso_pfsense }}"
+    cores: 1
+    memory: 2048
+    balloon: 1024
+    disk_size: "8G"
+    net:
+      net0: "virtio,bridge=vmbr2,firewall=0"
+    ip: "10.100.0.1"
+    start_order: 1
+    start_delay: 30
+
+  # -- Domain Controllers Windows Server 2022 --
+  - vmid: 32010
+    name: "DC01"
+    description: "Controleur de domaine principal — AD DS + DNS"
+    ostype: "win11"           # Win Server 2022 = type win11 dans Proxmox
+    iso: "{{ iso_windows }}"
+    cores: 2
+    memory: 4096
+    balloon: 2048
+    disk_size: "40G"
+    net:
+      net0: "e1000,bridge=vmbr1,firewall=0"  # e1000 = pas besoin de drivers virtio
+    ip: "172.16.132.10"
+    start_order: 2
+    start_delay: 120
+
+  - vmid: 32011
+    name: "DC02"
+    description: "Controleur de domaine secondaire — replication AD"
+    ostype: "win11"
+    iso: "{{ iso_windows }}"
+    cores: 2
+    memory: 4096
+    balloon: 2048
+    disk_size: "40G"
+    net:
+      net0: "e1000,bridge=vmbr1,firewall=0"
+    ip: "172.16.132.11"
+    start_order: 3
+    start_delay: 60
+
+  - vmid: 32012
+    name: "DC-AZURE"
+    description: "DC replique Azure — PRA Active Directory"
+    ostype: "win11"
+    iso: "{{ iso_windows }}"
+    cores: 2
+    memory: 4096
+    balloon: 2048
+    disk_size: "40G"
+    net:
+      net0: "e1000,bridge=vmbr2,firewall=0"
+    ip: "10.100.0.10"
+    start_order: 3
+    start_delay: 60
+
+  # -- Serveur WMS Ubuntu --
+  - vmid: 32020
+    name: "WMS"
+    description: "Serveur WMS — MySQL + simulation inventaire"
+    ostype: "l26"             # Linux kernel 2.6+
+    iso: "{{ iso_ubuntu }}"
+    cores: 1
+    memory: 2048
+    balloon: 1024
+    disk_size: "20G"
+    net:
+      net0: "virtio,bridge=vmbr1,firewall=0"
+    ip: "172.16.132.20"
+    cloud_init: true
+    start_order: 4
+    start_delay: 10
+
+  # -- IPBX FreePBX --
+  - vmid: 32030
+    name: "IPBX"
+    description: "Serveur VoIP FreePBX — telephonie IP + QoS"
+    ostype: "l26"
+    iso: "{{ iso_freepbx }}"
+    cores: 1
+    memory: 2048
+    balloon: 1024
+    disk_size: "20G"
+    net:
+      net0: "virtio,bridge=vmbr1,firewall=0"
+    ip: "172.16.132.30"
+    start_order: 4
+    start_delay: 10
+
+# --- Ressources totales du lab ---
+# RAM: 2+2+4+4+4+2+2 = 20 Go (sur 64 Go dispo — confortable)
+# Disque: 8+8+40+40+40+20+20 = 176 Go (sur 1 To SSD — OK)

@@ -47,7 +47,7 @@ Enter the LAN interface: vtnet0     (vmbr1 — reseau siege)
 
 Puis configurer les IPs :
 - **LAN** : 172.16.132.1/24 — pas de DHCP (IPs statiques en lab)
-- **WAN/OPT1** : 10.100.0.254/24 — cote siege du tunnel
+- **WAN/OPT1** : 10.100.0.254/24 — cote siege du tunnel (FW-AZURE sera en 10.100.0.1 sur le meme bridge vmbr2, les deux se voient via ce segment)
 
 ### 3. Acceder a l'interface web
 
@@ -66,7 +66,7 @@ Login: admin / pfsense
 Dans System → General Setup :
 - Hostname : `fw-siege`
 - Domain : `lab.local`
-- DNS Servers : `172.16.132.10` (DC01 quand il sera configure)
+- DNS Servers : `8.8.8.8` temporairement (remplacer par `172.16.132.10` apres le guide 03-active-directory.md)
 
 Dans System → Advanced → Admin Access :
 - Desactiver le redirect HTTP → HTTPS (lab)

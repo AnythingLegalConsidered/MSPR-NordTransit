@@ -1,0 +1,99 @@
+---
+# =============================================================================
+# 02-start-vms.yml — Demarrage ordonne des VMs
+# Respecte l'ordre : firewalls → DC principal → DC repliques → services
+# Usage : ansible-playbook playbooks/02-start-vms.yml
+# =============================================================================
+
+- name: "Demarrer les VMs du lab dans l'ordre"
+  hosts: proxmox
+  gather_facts: false
+
+  tasks:
+    # === Vague 1 : Firewalls (les gateways doivent etre UP en premier) ===
+    - name: "Vague 1 — Demarrer les firewalls"
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "{{ proxmox_api_user }}"
+        api_password: "{{ proxmox_api_password }}"
+        node: "{{ proxmox_node }}"
+        vmid: "{{ item }}"
+        state: started
+      loop:
+        - 32001  # FW-SIEGE
+        - 32005  # FW-AZURE
+      loop_control:
+        label: "VMID {{ item }}"
+
+    - name: "Attendre 30s — boot pfSense"
+      ansible.builtin.pause:
+        seconds: 30
+        prompt: "Firewalls en cours de boot..."
+
+    # === Vague 2 : DC principal (AD + DNS requis par les autres) ===
+    - name: "Vague 2 — Demarrer DC01 (AD principal)"
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "{{ proxmox_api_user }}"
+        api_password: "{{ proxmox_api_password }}"
+        node: "{{ proxmox_node }}"
+        vmid: 32010
+        state: started
+
+    - name: "Attendre 120s — boot Windows + services AD"
+      ansible.builtin.pause:
+        seconds: 120
+        prompt: "DC01 en cours de boot (Windows Server est lent)..."
+
+    # === Vague 3 : DC repliques (peuvent se connecter a DC01 maintenant) ===
+    - name: "Vague 3 — Demarrer DC02 + DC-AZURE"
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "{{ proxmox_api_user }}"
+        api_password: "{{ proxmox_api_password }}"
+        node: "{{ proxmox_node }}"
+        vmid: "{{ item }}"
+        state: started
+      loop:
+        - 32011  # DC02
+        - 32012  # DC-AZURE
+      loop_control:
+        label: "VMID {{ item }}"
+
+    - name: "Attendre 60s — boot DC repliques"
+      ansible.builtin.pause:
+        seconds: 60
+        prompt: "DC02 et DC-AZURE en cours de boot..."
+
+    # === Vague 4 : Services applicatifs ===
+    - name: "Vague 4 — Demarrer WMS + IPBX"
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "{{ proxmox_api_user }}"
+        api_password: "{{ proxmox_api_password }}"
+        node: "{{ proxmox_node }}"
+        vmid: "{{ item }}"
+        state: started
+      loop:
+        - 32020  # WMS
+        - 32030  # IPBX
+      loop_control:
+        label: "VMID {{ item }}"
+
+    - name: "Lab demarre"
+      ansible.builtin.debug:
+        msg: |
+          =============================================
+          LAB DEMARRE — Toutes les VMs sont UP
+          =============================================
+          Ordre de demarrage respecte :
+          1. FW-SIEGE + FW-AZURE (gateways)
+          2. DC01 (AD principal + DNS)
+          3. DC02 + DC-AZURE (repliques AD)
+          4. WMS + IPBX (services)
+          =============================================
+          Prochaines etapes manuelles :
+          - Installer pfSense (guide docs/03-lab-poc/02-pfsense-siege.md)
+          - Installer Windows + AD (guide docs/03-lab-poc/03-active-directory.md)
+          - WMS : deja configure via cloud-init
+          - FreePBX : installer via ISO (guide docs/03-lab-poc/04-ipbx-qos.md)

@@ -1,0 +1,37 @@
+#cloud-config
+# Cloud-init user-data pour la VM WMS (Ubuntu 22.04)
+# Deploye automatiquement au premier boot
+
+hostname: wms
+fqdn: wms.lab.local
+manage_etc_hosts: true
+
+users:
+  - name: wmsadmin
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    lock_passwd: false
+    groups: [sudo]
+
+chpasswd:
+  expire: false
+  users:
+    - name: wmsadmin
+      password: "P@ssw0rd!"
+      type: text
+
+package_update: true
+package_upgrade: true
+packages:
+  - mysql-server
+  - iperf3
+  - net-tools
+  - curl
+  - htop
+  - qemu-guest-agent
+
+runcmd:
+  - systemctl enable mysql
+  - systemctl start mysql
+  - systemctl enable qemu-guest-agent
+  - systemctl start qemu-guest-agent

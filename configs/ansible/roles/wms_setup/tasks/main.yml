@@ -1,0 +1,62 @@
+---
+# Role wms_setup — Configure le serveur WMS Ubuntu apres installation
+# Installe MySQL, cree la BDD, deploie le script de check, installe iperf3
+
+- name: "Attendre que cloud-init soit termine"
+  ansible.builtin.shell: cloud-init status --wait
+  changed_when: false
+  failed_when: false
+  timeout: 300
+
+- name: "Mettre a jour les paquets"
+  ansible.builtin.apt:
+    update_cache: true
+    upgrade: safe
+  become: true
+
+- name: "Installer les paquets requis"
+  ansible.builtin.apt:
+    name:
+      - mysql-server
+      - iperf3
+      - net-tools
+      - curl
+      - python3-pymysql  # necessaire pour le module mysql Ansible
+    state: present
+  become: true
+
+- name: "Demarrer et activer MySQL"
+  ansible.builtin.systemd:
+    name: mysql
+    state: started
+    enabled: true
+  become: true
+
+- name: "Copier le schema SQL"
+  ansible.builtin.copy:
+    src: wms_schema.sql
+    dest: /tmp/wms_schema.sql
+    mode: "0644"
+
+- name: "Creer la base wms_test et inserer les donnees"
+  ansible.builtin.shell: mysql < /tmp/wms_schema.sql
+  become: true
+  changed_when: true
+
+- name: "Deployer le script check_wms.sh"
+  ansible.builtin.template:
+    src: check_wms.sh.j2
+    dest: /home/wmsadmin/check_wms.sh
+    owner: wmsadmin
+    group: wmsadmin
+    mode: "0755"
+
+- name: "Verifier — lancer le check WMS"
+  ansible.builtin.shell: /home/wmsadmin/check_wms.sh
+  register: wms_check
+  changed_when: false
+  become: true
+
+- name: "Resultat du check WMS"
+  ansible.builtin.debug:
+    var: wms_check.stdout_lines

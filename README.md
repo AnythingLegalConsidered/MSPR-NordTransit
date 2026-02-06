@@ -28,8 +28,7 @@ MSPR/
 │   └── azure/              # Templates ARM/Bicep
 │
 ├── scripts/
-│   ├── build_docs.py       # Export Markdown → DOCX/PDF via pandoc
-│   └── notion_sync.py      # Sync Notion → local
+│   └── build_docs.py       # Export Markdown → DOCX/PDF via pandoc
 │
 └── output/                 # Fichiers generes (DOCX/PDF) - gitignore
 ```
@@ -50,23 +49,10 @@ MSPR/
 | Je veux... | Où ? | Comment ? |
 |------------|------|-----------|
 | Modifier une spec/doc | **Notion** | Éditer sur notion.so |
-| Synchroniser les specs | **Terminal** | `python scripts/notion_sync.py` |
+| Synchroniser les specs | **Notion** | Export depuis Notion (specs en read-only) |
 | Modifier une config | **Git** | Éditer + commit |
 | Voir les tâches | **Notion** | Kanban "📝 Tâches" |
 | Créer une tâche | **Notion** | Ajouter dans "📝 Tâches" |
-
-### Sync Notion → Local
-
-```bash
-# Sync complète
-python scripts/notion_sync.py
-
-# Dry-run (voir sans écrire)
-python scripts/notion_sync.py --dry-run
-
-# Sync une seule section
-python scripts/notion_sync.py --page "POC"
-```
 
 ## Documentation et export PDF
 

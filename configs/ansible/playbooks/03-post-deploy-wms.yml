@@ -1,0 +1,30 @@
+---
+# =============================================================================
+# 03-post-deploy-wms.yml — Configuration post-deploiement du WMS
+# Se connecte en SSH a la VM WMS et applique le role wms_setup
+# Usage : ansible-playbook playbooks/03-post-deploy-wms.yml
+# Prereqs : VM WMS demarree, Ubuntu installe, SSH accessible
+# =============================================================================
+
+- name: "Post-deploy WMS — MySQL + iperf3 + check script"
+  hosts: lab_linux
+  gather_facts: true
+  become: true
+
+  roles:
+    - wms_setup
+
+  post_tasks:
+    - name: "Post-deploy WMS termine"
+      ansible.builtin.debug:
+        msg: |
+          =============================================
+          WMS CONFIGURE
+          =============================================
+          MySQL     : installe et actif
+          BDD       : wms_test (5 enregistrements)
+          iperf3    : installe (pour tests QoS)
+          Check     : /home/wmsadmin/check_wms.sh
+          =============================================
+          Le serveur WMS est pret pour les tests.
+          Voir docs/03-lab-poc/07-tests-validation.md

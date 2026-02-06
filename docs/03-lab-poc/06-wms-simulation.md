@@ -36,10 +36,12 @@ sudo apt update && sudo apt upgrade -y
 **Pourquoi** : Le WMS reel utilise une base de donnees. MySQL simule cette base.
 
 ```bash
-sudo apt install mysql-server -y
+sudo apt install mysql-server iperf3 -y
 sudo systemctl enable mysql
 sudo systemctl start mysql
 ```
+
+> **Note** : iperf3 est installe ici car il sera necessaire pour les tests QoS (guide 04 et 07).
 
 ### 3. Creer la base de donnees WMS
 

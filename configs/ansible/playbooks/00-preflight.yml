@@ -1,0 +1,125 @@
+---
+# =============================================================================
+# 00-preflight.yml — Verifications avant deploiement du lab
+# Verifie que le noeud Proxmox est pret : bridges, ISOs, ressources
+# Usage : ansible-playbook playbooks/00-preflight.yml
+# =============================================================================
+
+- name: "Preflight — Verification du noeud Proxmox"
+  hosts: proxmox
+  gather_facts: true
+  become: true
+
+  tasks:
+    # -- Verifier que les bridges reseau existent --
+    - name: "Verifier bridge vmbr1 (LAN siege 172.16.132.0/24)"
+      ansible.builtin.shell: ip link show vmbr1
+      register: bridge_vmbr1
+      changed_when: false
+
+    - name: "Verifier bridge vmbr2 (WAN Azure 10.100.0.0/24)"
+      ansible.builtin.shell: ip link show vmbr2
+      register: bridge_vmbr2
+      changed_when: false
+
+    - name: "Confirmer les bridges"
+      ansible.builtin.debug:
+        msg: "vmbr1 et vmbr2 OK"
+
+    # -- Verifier les ISOs --
+    - name: "Verifier ISO pfSense"
+      ansible.builtin.stat:
+        path: "/var/lib/vz/template/iso/{{ iso_pfsense }}"
+      register: iso_pf
+
+    - name: "Verifier ISO Windows Server"
+      ansible.builtin.stat:
+        path: "/var/lib/vz/template/iso/{{ iso_windows }}"
+      register: iso_win
+
+    - name: "Verifier ISO Ubuntu"
+      ansible.builtin.stat:
+        path: "/var/lib/vz/template/iso/{{ iso_ubuntu }}"
+      register: iso_ubu
+
+    - name: "Verifier ISO FreePBX"
+      ansible.builtin.stat:
+        path: "/var/lib/vz/template/iso/{{ iso_freepbx }}"
+      register: iso_fpbx
+
+    - name: "Rapport ISOs"
+      ansible.builtin.debug:
+        msg: |
+          pfSense  : {{ 'OK' if iso_pf.stat.exists else 'MANQUANTE — telecharger ' + iso_pfsense }}
+          Windows  : {{ 'OK' if iso_win.stat.exists else 'MANQUANTE — telecharger ' + iso_windows }}
+          Ubuntu   : {{ 'OK' if iso_ubu.stat.exists else 'MANQUANTE — telecharger ' + iso_ubuntu }}
+          FreePBX  : {{ 'OK' if iso_fpbx.stat.exists else 'MANQUANTE — telecharger ' + iso_freepbx }}
+
+    - name: "Bloquer si des ISOs manquent"
+      ansible.builtin.assert:
+        that:
+          - iso_pf.stat.exists
+          - iso_win.stat.exists
+          - iso_ubu.stat.exists
+          - iso_fpbx.stat.exists
+        fail_msg: >
+          Des ISOs manquent ! Telecharger les ISOs manquantes dans
+          /var/lib/vz/template/iso/ avant de continuer.
+        success_msg: "Toutes les ISOs sont presentes."
+
+    # -- Verifier la RAM disponible --
+    - name: "Verifier RAM disponible"
+      ansible.builtin.shell: free -m | awk '/^Mem:/{print $7}'
+      register: ram_available
+      changed_when: false
+
+    - name: "RAM suffisante (besoin de 22 Go minimum)"
+      ansible.builtin.assert:
+        that:
+          - ram_available.stdout | int >= 22000
+        fail_msg: "RAM insuffisante : {{ ram_available.stdout }} Mo dispo, besoin de 22000 Mo"
+        success_msg: "RAM OK : {{ ram_available.stdout }} Mo disponibles"
+
+    # -- Verifier l'espace disque --
+    - name: "Verifier espace disque"
+      ansible.builtin.shell: df -BG /var/lib/vz | tail -1 | awk '{print $4}' | tr -d 'G'
+      register: disk_available
+      changed_when: false
+
+    - name: "Espace disque suffisant (besoin de 200 Go minimum)"
+      ansible.builtin.assert:
+        that:
+          - disk_available.stdout | int >= 200
+        fail_msg: "Espace insuffisant : {{ disk_available.stdout }} Go dispo, besoin de 200 Go"
+        success_msg: "Espace disque OK : {{ disk_available.stdout }} Go disponibles"
+
+    # -- Verifier proxmoxer (dependance Python) --
+    - name: "Verifier module Python proxmoxer"
+      ansible.builtin.shell: python3 -c "import proxmoxer" 2>&1
+      register: proxmoxer_check
+      changed_when: false
+      failed_when: false
+
+    - name: "proxmoxer installe"
+      ansible.builtin.assert:
+        that:
+          - proxmoxer_check.rc == 0
+        fail_msg: >
+          Module proxmoxer manquant ! Installer avec :
+          pip install proxmoxer requests
+        success_msg: "Module proxmoxer OK"
+
+    # -- Resume final --
+    - name: "PREFLIGHT COMPLET"
+      ansible.builtin.debug:
+        msg: |
+          =============================================
+          PREFLIGHT OK — Le noeud {{ proxmox_node }} est pret
+          =============================================
+          Bridges  : vmbr1 + vmbr2 OK
+          ISOs     : 4/4 presentes
+          RAM      : {{ ram_available.stdout }} Mo disponibles
+          Disque   : {{ disk_available.stdout }} Go disponibles
+          Python   : proxmoxer OK
+          =============================================
+          Prochaine etape : ansible-playbook playbooks/01-create-vms.yml

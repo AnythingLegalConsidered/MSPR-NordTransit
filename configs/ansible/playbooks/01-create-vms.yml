@@ -1,0 +1,85 @@
+---
+# =============================================================================
+# 01-create-vms.yml — Creation des 7 VMs du lab sur Proxmox
+# Cree les VMs sans les demarrer (state: present)
+# Usage : ansible-playbook playbooks/01-create-vms.yml
+# =============================================================================
+
+- name: "Creer les 7 VMs du lab NordTransit"
+  hosts: proxmox
+  gather_facts: false
+
+  tasks:
+    - name: "Creer VM {{ item.name }} (VMID {{ item.vmid }})"
+      community.general.proxmox_kvm:
+        api_host: "{{ proxmox_api_host }}"
+        api_user: "{{ proxmox_api_user }}"
+        api_password: "{{ proxmox_api_password }}"
+        node: "{{ proxmox_node }}"
+
+        vmid: "{{ item.vmid }}"
+        name: "{{ item.name }}"
+        description: "{{ item.description | default('') }}"
+
+        # Hardware
+        ostype: "{{ item.ostype }}"
+        cores: "{{ item.cores }}"
+        memory: "{{ item.memory }}"
+        balloon: "{{ item.balloon | default(0) }}"
+        cpu: "host"
+        scsihw: "virtio-scsi-pci"
+
+        # Disque systeme
+        scsi:
+          scsi0: "{{ proxmox_storage_vms }}:{{ item.disk_size }}"
+
+        # Reseau (1 ou 2 NICs selon la VM)
+        net: "{{ item.net }}"
+
+        # ISO de boot
+        ide:
+          ide2: "{{ proxmox_storage_iso }}:iso/{{ item.iso }},media=cdrom"
+
+        # Boot order : disque puis CD
+        boot: "order=scsi0;ide2;net0"
+
+        # Options
+        agent: "{{ 1 if item.ostype == 'l26' else 0 }}"
+        onboot: false
+        state: present
+
+      loop: "{{ lab_vms }}"
+      loop_control:
+        label: "{{ item.name }} ({{ item.vmid }})"
+
+    # -- Ajouter cloud-init sur la VM WMS --
+    - name: "Ajouter lecteur cloud-init sur WMS"
+      ansible.builtin.shell: >
+        qm set 32020 --ide0 {{ proxmox_storage_vms }}:cloudinit
+      args:
+        creates: "/etc/pve/qemu-server/32020.conf"
+      changed_when: true
+      when: true
+
+    - name: "Configurer cloud-init WMS — IP statique"
+      ansible.builtin.shell: >
+        qm set 32020
+        --ipconfig0 ip=172.16.132.20/24,gw=172.16.132.1
+        --nameserver 172.16.132.10
+        --searchdomain lab.local
+        --ciuser wmsadmin
+        --cipassword '{{ lab_password }}'
+        --sshkeys '{{ ssh_public_key }}'
+      changed_when: true
+
+    - name: "VMs creees avec succes"
+      ansible.builtin.debug:
+        msg: |
+          =============================================
+          7 VMs creees sur {{ proxmox_node }}
+          =============================================
+          {% for vm in lab_vms %}
+          {{ vm.vmid }} | {{ vm.name }} | {{ vm.ip }} | {{ vm.memory }} Mo RAM
+          {% endfor %}
+          =============================================
+          Prochaine etape : ansible-playbook playbooks/02-start-vms.yml

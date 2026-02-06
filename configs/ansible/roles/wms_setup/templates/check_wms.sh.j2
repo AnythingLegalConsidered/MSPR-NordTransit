@@ -1,0 +1,35 @@
+#!/bin/bash
+# Check WMS database integrity — deploye par Ansible
+echo "=== WMS Health Check ==="
+echo "Date: $(date)"
+echo "Host: $(hostname)"
+echo ""
+
+# Check MySQL service
+if systemctl is-active --quiet mysql; then
+    echo "[OK] MySQL service running"
+else
+    echo "[FAIL] MySQL service down"
+    exit 1
+fi
+
+# Check database
+COUNT=$(mysql -u root -e "SELECT COUNT(*) FROM wms_test.inventory;" -sN 2>/dev/null)
+if [ "$COUNT" -ge 5 ]; then
+    echo "[OK] Database OK - $COUNT records found"
+else
+    echo "[FAIL] Database issue - expected >= 5 records, got $COUNT"
+    exit 1
+fi
+
+# Check iperf3 available (for QoS tests)
+if command -v iperf3 &>/dev/null; then
+    echo "[OK] iperf3 installed"
+else
+    echo "[WARN] iperf3 missing — install with: sudo apt install iperf3"
+fi
+
+# Show data
+mysql -u root -e "SELECT * FROM wms_test.inventory;" 2>/dev/null
+echo ""
+echo "=== Check complete ==="
