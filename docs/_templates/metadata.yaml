@@ -1,0 +1,20 @@
+# Metadata commune pour pandoc
+# Usage: pandoc --metadata-file=docs/_templates/metadata.yaml input.md -o output.pdf
+
+title-meta: "MSPR - NordTransit Logistics"
+author-meta: "Equipe NordTransit"
+lang: fr-FR
+documentclass: report
+fontsize: 11pt
+geometry: "margin=2.5cm"
+toc: true
+toc-depth: 3
+numbersections: true
+colorlinks: true
+linkcolor: "blue"
+header-includes:
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[L]{MSPR - NordTransit Logistics}
+  - \fancyhead[R]{\today}
+  - \fancyfoot[C]{\thepage}

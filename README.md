@@ -6,30 +6,44 @@ Projet de modernisation infrastructure SI pour NordTransit Logistics (PME logist
 
 ```
 MSPR/
-├── _specs/                 # Export Notion (READ-ONLY - ne pas éditer)
+├── _specs/                 # Export Notion (READ-ONLY - ne pas editer)
 │   ├── OVERVIEW.md         # Vue d'ensemble projet
 │   ├── PLAN.md             # Jalons et planning
 │   ├── comprendre/         # Analyse de l'existant
 │   ├── solution/           # Architecture cible
 │   └── poc/                # Tests de validation
 │
+├── docs/                   # Documentation reproductible (EDITABLE)
+│   ├── _templates/         # Templates guides + livrables + metadata pandoc
+│   ├── 01-analyse/         # Phase 1 : Contexte, audit, points de douleur
+│   ├── 02-conception/      # Phase 2 : Architecture, VLAN, securite, migration
+│   ├── 03-lab-poc/         # Phase 3 : Guides pas-a-pas pour le lab Proxmox
+│   ├── 04-livrables/       # Phase 4 : Documents finaux (archi, migration, ToIP...)
+│   ├── 05-soutenance/      # Phase 5 : Plan de presentation
+│   └── glossaire.md        # Termes techniques
+│
 ├── configs/                # Fichiers techniques (EDITABLE)
 │   ├── pfsense/            # Configs firewall
 │   ├── ansible/            # Playbooks automation
 │   └── azure/              # Templates ARM/Bicep
 │
-└── scripts/
-    └── notion_sync.py      # Sync Notion → local
+├── scripts/
+│   ├── build_docs.py       # Export Markdown → DOCX/PDF via pandoc
+│   └── notion_sync.py      # Sync Notion → local
+│
+└── output/                 # Fichiers generes (DOCX/PDF) - gitignore
 ```
 
 ## Workflow équipe
 
-### Règle d'or
+### Regle d'or
 
-| Dossier | Usage | Éditable ? |
+| Dossier | Usage | Editable ? |
 |---------|-------|------------|
 | `_specs/` | Miroir Notion | NON - sync automatique |
+| `docs/` | Guides reproductibles + livrables | OUI - commit normalement |
 | `configs/` | Fichiers techniques | OUI - commit normalement |
+| `output/` | Fichiers generes (PDF/DOCX) | NON - genere par script |
 
 ### Actions courantes
 
@@ -53,6 +67,32 @@ python scripts/notion_sync.py --dry-run
 # Sync une seule section
 python scripts/notion_sync.py --page "POC"
 ```
+
+## Documentation et export PDF
+
+### Guides reproductibles
+
+Chaque guide dans `docs/` suit un template uniforme : objectif, prerequis, etapes avec justifications, verification, depannage.
+
+### Exporter en DOCX/PDF
+
+Prerequis : [pandoc](https://pandoc.org/installing.html) installe (`choco install pandoc` sur Windows).
+
+```bash
+# Generer le template DOCX de reference (une seule fois)
+python scripts/build_docs.py --init-template
+
+# Exporter un fichier
+python scripts/build_docs.py docs/04-livrables/architecture-technique.md --format pdf
+
+# Exporter tous les livrables
+python scripts/build_docs.py --all --format pdf
+
+# Exporter en DOCX (pour retouches Word)
+python scripts/build_docs.py --all --format docx
+```
+
+Les fichiers generes sont dans `output/`.
 
 ## Conventions Git
 
