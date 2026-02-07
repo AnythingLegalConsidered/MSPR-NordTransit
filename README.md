@@ -53,7 +53,7 @@ On a monte **7 VMs sur Proxmox** pour tester chaque brique de l'architecture :
 
 ```mermaid
 graph TB
-    subgraph LAN Siege — 172.16.132.0/24
+    subgraph LAN Siege - 172.16.132.0/24
         DC01[DC01<br>Win Server] --- DC02[DC02<br>Win Server]
         WMS[WMS<br>Ubuntu + MySQL]
         IPBX[IPBX<br>FreePBX]
@@ -63,7 +63,7 @@ graph TB
     FW_SIEGE --- WMS
     FW_SIEGE --- IPBX
 
-    subgraph WAN Azure — 10.100.0.0/24
+    subgraph WAN Azure - 10.100.0.0/24
         DC_AZ[DC-AZURE<br>Win Server]
         FW_AZ[FW-AZURE<br>pfSense]
     end
