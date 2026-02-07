@@ -1,67 +1,115 @@
 # MSPR - NordTransit Logistics
 
-Projet de modernisation infrastructure SI pour NordTransit Logistics (PME logistique, 4 entrepots + 1 cross-dock).
+NordTransit, c'est une PME logistique dans les Hauts-de-France : 4 entrepots, 240 employes, et un SI qui tient avec du scotch. On modernise tout.
 
-> **En 30 secondes** : NordTransit = PME logistique, 4 entrepots, SI vieillissant.
-> On modernise : FortiGate, cluster HA, AD multi-DC, PRA Azure, QoS VoIP.
-> Budget : 137k EUR | Equipe : 5 personnes | Lab POC : 7 VMs Proxmox, 4/4 tests PASS.
+## Le probleme
 
-## Par ou commencer ?
+NordTransit tourne sur un **serveur unique** (Dell R630) sans redondance. Si ce serveur tombe, c'est tout le WMS (gestion d'entrepot) qui s'arrete — et donc les 4 sites.
 
-| Tu veux... | Va sur... |
-|------------|-----------|
-| Comprendre la structure du repo | [`STRUCTURE.md`](STRUCTURE.md) |
-| Demarrer rapidement | [`docs/QUICKSTART.md`](docs/QUICKSTART.md) |
-| Comprendre le contexte client | [`docs/01-analyse/`](docs/01-analyse/) |
-| Voir l'architecture cible | [`docs/02-conception/`](docs/02-conception/) |
-| Reproduire le lab Proxmox | [`docs/03-lab-poc/`](docs/03-lab-poc/) (guides 00 a 07) |
-| Lire les livrables finaux | [`docs/04-livrables/`](docs/04-livrables/) |
-| Preparer la soutenance | [`docs/05-soutenance/`](docs/05-soutenance/) |
-| Deployer le lab automatiquement | [`configs/ansible/`](configs/ansible/) |
+En vrac, ce qui ne va pas :
 
-## Structure du projet
+- **Pas de PRA** — un sinistre au siege = perte totale des donnees
+- **Firewall EOL** — le FortiGate 80D n'est plus mis a jour, les DrayTek sont basiques
+- **VPN fragile** — configuration minimale, pas de chiffrement fort
+- **VoIP degradee** — aucune QoS, la voix se coupe quand le reseau charge
+- **DSI de 4 personnes** — qui gere tout a la main, sans doc, sans supervision
 
-```
-MSPR/
-├── _specs/              # Export Notion (read-only, specs initiales)
-├── docs/                # Documentation reproductible
-│   ├── 01-analyse/      # Contexte, audit, points de douleur
-│   ├── 02-conception/   # Architecture, VLAN, securite, migration
-│   ├── 03-lab-poc/      # Guides pas-a-pas lab Proxmox (7 VMs)
-│   ├── 04-livrables/    # Documents finaux pour le jury
-│   ├── 05-soutenance/   # Plan de presentation orale
-│   └── _templates/      # Templates pandoc
-├── configs/ansible/     # Playbooks automation lab
-├── scripts/             # Export PDF, sync Notion
-└── output/              # Fichiers generes (gitignored)
-```
+> Detail complet dans [`docs/01-analyse/`](docs/01-analyse/) (contexte client, audit infra, points de douleur)
 
-Detail complet dans [`STRUCTURE.md`](STRUCTURE.md).
+## Notre solution
 
-## Exporter en DOCX/PDF
+On remplace tout le socle par une architecture redondante et securisee :
 
-Prerequis : [pandoc](https://pandoc.org/installing.html) (`choco install pandoc` sur Windows).
+```mermaid
+graph LR
+    subgraph Siege Lille
+        FW[FortiGate 100F] --> SRV[Cluster 2 noeuds + SAN]
+        FW --> AD1[AD principal]
+        FW --> IPBX[FreePBX VoIP]
+    end
 
-```bash
-# Generer le template DOCX de reference (une seule fois)
-python scripts/build_docs.py --init-template
+    subgraph Entrepots x4
+        FWE[FortiGate 80F] --> DATA[Postes + RF]
+    end
 
-# Exporter tous les livrables
-python scripts/build_docs.py --all --format pdf
+    subgraph Azure PRA
+        AZ[Landing Zone] --> AD2[DC replique]
+        AZ --> WMS2[WMS standby]
+    end
 
-# Exporter un fichier specifique
-python scripts/build_docs.py docs/04-livrables/architecture-technique.md --format docx
+    FW -- VPN IKEv2 --- FWE
+    FW -- VPN IKEv2 --- AZ
 ```
 
-## Conventions Git
+**En resume** : FortiGate homogenes partout, cluster serveurs HA, AD multi-DC (siege + Azure), QoS VoIP dediee, PRA dans Azure.
 
-Commits conventionnels : `feat:` | `fix:` | `docs:` | `refactor:` | `test:` | `chore:`
+**Budget** : 137k EUR sur 150k max — [detail dans le DAT](docs/04-livrables/architecture-technique.md).
 
-## Equipe
+> Conception detaillee dans [`docs/02-conception/`](docs/02-conception/) (architecture cible, plan VLAN, securite, migration)
 
-5 personnes - pas de roles figes, on s'entraide !
+## On l'a prouve : le lab POC
 
-## Liens
+On a monte **7 VMs sur Proxmox** pour tester chaque brique de l'architecture :
 
-- [Notion projet](https://www.notion.so/MSPR-NordTransit-Logistics-2e095ddfecb18106aee6f23d0c83a063) (presentation visuelle)
-- Lab Proxmox : VMID 32001-32030, reseau 172.16.132.0/24
+```mermaid
+graph TB
+    subgraph LAN Siege — 172.16.132.0/24
+        DC01[DC01<br>Win Server] --- DC02[DC02<br>Win Server]
+        WMS[WMS<br>Ubuntu + MySQL]
+        IPBX[IPBX<br>FreePBX]
+    end
+
+    FW_SIEGE[FW-SIEGE<br>pfSense] --- DC01
+    FW_SIEGE --- WMS
+    FW_SIEGE --- IPBX
+
+    subgraph WAN Azure — 10.100.0.0/24
+        DC_AZ[DC-AZURE<br>Win Server]
+        FW_AZ[FW-AZURE<br>pfSense]
+    end
+
+    FW_SIEGE -- tunnel inter-sites --- FW_AZ
+    FW_AZ --- DC_AZ
+```
+
+**4 tests, 4 PASS :**
+
+| Test | Ce qu'on prouve | Resultat |
+|------|-----------------|----------|
+| QoS VoIP | La voix reste claire sous charge reseau (500 Mbps) | **0.1ms** latence, **0%** perte |
+| Failover AD | DC02 prend le relais si DC01 tombe | Bascule **immediate** |
+| Tunnel Azure | Le site Azure communique avec le siege | Ping + DNS + replication **OK** |
+| Failover WMS | La BDD survit a un reboot serveur | **20s** de reboot, 0 perte |
+
+> Guides pas-a-pas dans [`docs/03-lab-poc/`](docs/03-lab-poc/) (00 a 07, dans l'ordre) — resultats detailles dans [`07-tests-validation`](docs/03-lab-poc/07-tests-validation.md)
+
+## Les livrables
+
+Ce qu'on rend au jury :
+
+| Document | Description | Fichier |
+|----------|-------------|---------|
+| Architecture technique (DAT) | Architecture complete, justifications, budget | [`architecture-technique.md`](docs/04-livrables/architecture-technique.md) |
+| Strategie de migration | 6 phases, planning 6 semaines, rollback | [`strategie-migration.md`](docs/04-livrables/strategie-migration.md) |
+| Config pare-feu | Regles FortiGate, QoS, CLI production | [`pare-feu.md`](docs/04-livrables/configs/pare-feu.md) |
+| Config VPN IPsec | IKEv2, 5 tunnels, CLI production | [`vpn-ipsec.md`](docs/04-livrables/configs/vpn-ipsec.md) |
+| Note WMS | Analyse SPOF, recommandations HA | [`note-recommandation-wms.md`](docs/04-livrables/note-recommandation-wms.md) |
+| Guide depannage ToIP | Arbre decision N1/N2 | [`guide-depannage-toip.md`](docs/04-livrables/guide-depannage-toip.md) |
+
+> Exporter en PDF/DOCX : `python scripts/build_docs.py --all --format pdf` (necessite [pandoc](https://pandoc.org/installing.html))
+
+## Reproduire le lab
+
+1. **Prerequis** : Proxmox VE, ~20 Go RAM, ~100 Go disque — [`00-prerequis-lab`](docs/03-lab-poc/00-prerequis-lab.md)
+2. **Suivre les guides** dans l'ordre : 01 (reseau) → 02 (pfSense) → 03 (AD) → 04 (VoIP) → 05 (Azure) → 06 (WMS)
+3. **Valider** avec les 4 tests : [`07-tests-validation`](docs/03-lab-poc/07-tests-validation.md)
+
+**Raccourci Ansible** : les playbooks dans [`configs/ansible/`](configs/ansible/) automatisent la creation des VMs.
+
+> Guide complet dans [`docs/QUICKSTART.md`](docs/QUICKSTART.md)
+
+## Soutenance
+
+- Plan de presentation (20 min + 30 min jury) : [`docs/05-soutenance/plan-presentation.md`](docs/05-soutenance/plan-presentation.md)
+- Glossaire : [`docs/glossaire.md`](docs/glossaire.md)
+- [Notion projet](https://www.notion.so/MSPR-NordTransit-Logistics-2e095ddfecb18106aee6f23d0c83a063)
