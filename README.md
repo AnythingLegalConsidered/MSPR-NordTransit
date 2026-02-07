@@ -1,109 +1,67 @@
 # MSPR - NordTransit Logistics
 
-Projet de modernisation infrastructure SI pour NordTransit Logistics (PME logistique, 4 entrepôts + 1 cross-dock).
+Projet de modernisation infrastructure SI pour NordTransit Logistics (PME logistique, 4 entrepots + 1 cross-dock).
+
+> **En 30 secondes** : NordTransit = PME logistique, 4 entrepots, SI vieillissant.
+> On modernise : FortiGate, cluster HA, AD multi-DC, PRA Azure, QoS VoIP.
+> Budget : 137k EUR | Equipe : 5 personnes | Lab POC : 7 VMs Proxmox, 4/4 tests PASS.
+
+## Par ou commencer ?
+
+| Tu veux... | Va sur... |
+|------------|-----------|
+| Comprendre la structure du repo | [`STRUCTURE.md`](STRUCTURE.md) |
+| Demarrer rapidement | [`docs/QUICKSTART.md`](docs/QUICKSTART.md) |
+| Comprendre le contexte client | [`docs/01-analyse/`](docs/01-analyse/) |
+| Voir l'architecture cible | [`docs/02-conception/`](docs/02-conception/) |
+| Reproduire le lab Proxmox | [`docs/03-lab-poc/`](docs/03-lab-poc/) (guides 00 a 07) |
+| Lire les livrables finaux | [`docs/04-livrables/`](docs/04-livrables/) |
+| Preparer la soutenance | [`docs/05-soutenance/`](docs/05-soutenance/) |
+| Deployer le lab automatiquement | [`configs/ansible/`](configs/ansible/) |
 
 ## Structure du projet
 
 ```
 MSPR/
-├── _specs/                 # Export Notion (READ-ONLY - ne pas editer)
-│   ├── OVERVIEW.md         # Vue d'ensemble projet
-│   ├── PLAN.md             # Jalons et planning
-│   ├── comprendre/         # Analyse de l'existant
-│   ├── solution/           # Architecture cible
-│   └── poc/                # Tests de validation
-│
-├── docs/                   # Documentation reproductible (EDITABLE)
-│   ├── _templates/         # Templates guides + livrables + metadata pandoc
-│   ├── 01-analyse/         # Phase 1 : Contexte, audit, points de douleur
-│   ├── 02-conception/      # Phase 2 : Architecture, VLAN, securite, migration
-│   ├── 03-lab-poc/         # Phase 3 : Guides pas-a-pas pour le lab Proxmox
-│   ├── 04-livrables/       # Phase 4 : Documents finaux (archi, migration, ToIP...)
-│   ├── 05-soutenance/      # Phase 5 : Plan de presentation
-│   └── glossaire.md        # Termes techniques
-│
-├── configs/                # Fichiers techniques (EDITABLE)
-│   ├── pfsense/            # Configs firewall
-│   ├── ansible/            # Playbooks automation
-│   └── azure/              # Templates ARM/Bicep
-│
-├── scripts/
-│   └── build_docs.py       # Export Markdown → DOCX/PDF via pandoc
-│
-└── output/                 # Fichiers generes (DOCX/PDF) - gitignore
+├── _specs/              # Export Notion (read-only, specs initiales)
+├── docs/                # Documentation reproductible
+│   ├── 01-analyse/      # Contexte, audit, points de douleur
+│   ├── 02-conception/   # Architecture, VLAN, securite, migration
+│   ├── 03-lab-poc/      # Guides pas-a-pas lab Proxmox (7 VMs)
+│   ├── 04-livrables/    # Documents finaux pour le jury
+│   ├── 05-soutenance/   # Plan de presentation orale
+│   └── _templates/      # Templates pandoc
+├── configs/ansible/     # Playbooks automation lab
+├── scripts/             # Export PDF, sync Notion
+└── output/              # Fichiers generes (gitignored)
 ```
 
-## Workflow équipe
+Detail complet dans [`STRUCTURE.md`](STRUCTURE.md).
 
-### Regle d'or
+## Exporter en DOCX/PDF
 
-| Dossier | Usage | Editable ? |
-|---------|-------|------------|
-| `_specs/` | Miroir Notion | NON - sync automatique |
-| `docs/` | Guides reproductibles + livrables | OUI - commit normalement |
-| `configs/` | Fichiers techniques | OUI - commit normalement |
-| `output/` | Fichiers generes (PDF/DOCX) | NON - genere par script |
-
-### Actions courantes
-
-| Je veux... | Où ? | Comment ? |
-|------------|------|-----------|
-| Modifier une spec/doc | **Notion** | Éditer sur notion.so |
-| Synchroniser les specs | **Notion** | Export depuis Notion (specs en read-only) |
-| Modifier une config | **Git** | Éditer + commit |
-| Voir les tâches | **Notion** | Kanban "📝 Tâches" |
-| Créer une tâche | **Notion** | Ajouter dans "📝 Tâches" |
-
-## Documentation et export PDF
-
-### Guides reproductibles
-
-Chaque guide dans `docs/` suit un template uniforme : objectif, prerequis, etapes avec justifications, verification, depannage.
-
-### Exporter en DOCX/PDF
-
-Prerequis : [pandoc](https://pandoc.org/installing.html) installe (`choco install pandoc` sur Windows).
+Prerequis : [pandoc](https://pandoc.org/installing.html) (`choco install pandoc` sur Windows).
 
 ```bash
 # Generer le template DOCX de reference (une seule fois)
 python scripts/build_docs.py --init-template
 
-# Exporter un fichier
-python scripts/build_docs.py docs/04-livrables/architecture-technique.md --format pdf
-
 # Exporter tous les livrables
 python scripts/build_docs.py --all --format pdf
 
-# Exporter en DOCX (pour retouches Word)
-python scripts/build_docs.py --all --format docx
+# Exporter un fichier specifique
+python scripts/build_docs.py docs/04-livrables/architecture-technique.md --format docx
 ```
-
-Les fichiers generes sont dans `output/`.
 
 ## Conventions Git
 
-### Commits
+Commits conventionnels : `feat:` | `fix:` | `docs:` | `refactor:` | `test:` | `chore:`
 
-```
-feat: nouvelle fonctionnalité
-fix: correction bug
-docs: sync notion / documentation
-refactor: refactoring code
-test: ajout/modif tests
-chore: maintenance
-```
+## Equipe
 
-### Branches
+5 personnes - pas de roles figes, on s'entraide !
 
-- `main` - Production stable
-- `feature/xxx` - Nouvelles features
-- `fix/xxx` - Corrections
+## Liens
 
-## Liens utiles
-
-- [Notion projet](https://www.notion.so/MSPR-NordTransit-Logistics-2e095ddfecb18106aee6f23d0c83a063)
-- Lab Proxmox : VMID 32000-32100, réseau 172.16.132.0/24
-
-## Équipe
-
-5 personnes - pas de rôles figés, on s'entraide !
+- [Notion projet](https://www.notion.so/MSPR-NordTransit-Logistics-2e095ddfecb18106aee6f23d0c83a063) (presentation visuelle)
+- Lab Proxmox : VMID 32001-32030, reseau 172.16.132.0/24
