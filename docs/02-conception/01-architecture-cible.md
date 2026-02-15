@@ -2,7 +2,7 @@
 title: "Architecture cible"
 phase: "02-conception"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 prerequis:
   - "Phase 01-analyse terminee"
 ---

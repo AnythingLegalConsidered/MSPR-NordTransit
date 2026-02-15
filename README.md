@@ -29,7 +29,7 @@ graph LR
     end
 
     subgraph Entrepots x4
-        FWE[FortiGate 80F] --> DATA[Postes + RF]
+        FWE[FortiGate 60F] --> DATA[Postes + RF]
     end
 
     subgraph Azure PRA

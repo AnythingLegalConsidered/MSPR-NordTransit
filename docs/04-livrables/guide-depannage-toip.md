@@ -2,7 +2,7 @@
 title: "Guide de Depannage ToIP - Niveaux N1 et N2"
 subtitle: "MSPR - NordTransit Logistics"
 author: "Equipe NordTransit"
-date: 2026-02-XX
+date: 2026-02-06
 version: "1.0"
 toc: true
 ---
@@ -15,9 +15,9 @@ toc: true
 |-------|--------|
 | Projet | MSPR - NordTransit Logistics |
 | Version | 1.0 |
-| Date | 2026-02-XX |
+| Date | 2026-02-06 |
 | Auteurs | Equipe NordTransit (5 personnes) |
-| Statut | En cours |
+| Statut | Complet |
 
 ---
 

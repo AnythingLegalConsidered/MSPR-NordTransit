@@ -2,7 +2,7 @@
 title: "Active Directory - DC01 et DC02"
 phase: "03-lab-poc"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 prerequis:
   - "Guide 02-pfsense-siege.md complete"
   - "VMs DC01 (32010) et DC02 (32011) installees avec Windows Server 2022"

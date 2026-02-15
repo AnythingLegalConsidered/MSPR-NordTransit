@@ -84,7 +84,7 @@ toc: true
 |---|--------|-------------|---------|----------|--------|---------------|
 | 1 | VLAN 10 (MGMT) | Toutes les zones | Tout | * | ACCEPT | Administration reseau |
 | 2 | VLAN 40 (VOIP) | VLAN 20 (SERVEURS) | SIP, RTP | 5060, 10000-20000 | ACCEPT | Telephones IP vers IPBX |
-| 3 | VLAN 30 (DATA) | VLAN 20 (SERVEURS) | HTTP, HTTPS, SMB, DNS, LDAP | 80, 443, 445, 53, 389 | ACCEPT | Postes vers WMS, AD, fichiers |
+| 3 | VLAN 30 (DATA) | VLAN 20 (SERVEURS) | HTTP, HTTPS, SMB, DNS, LDAP, LDAPS, Kerberos | 80, 443, 445, 53, 389, 636, 88 | ACCEPT | Postes vers WMS, AD, fichiers |
 | 4 | VLAN 30 (DATA) | VLAN 40 (VOIP) | Tout | * | DENY | Isolation stricte VoIP |
 | 5 | VLAN 40 (VOIP) | VLAN 30 (DATA) | Tout | * | DENY | Isolation stricte VoIP |
 | 6 | VLAN 20 (SERVEURS) | VLAN 20 (SERVEURS) | Tout | * | ACCEPT | Communication inter-serveurs |

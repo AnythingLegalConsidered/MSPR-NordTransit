@@ -2,7 +2,7 @@
 title: "Points de douleur identifies"
 phase: "01-analyse"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 prerequis:
   - "Guide 02-audit-infrastructure.md complete"
 ---

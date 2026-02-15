@@ -2,7 +2,7 @@
 title: "Strategie de securite"
 phase: "02-conception"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 prerequis:
   - "Guide 02-plan-adressage-vlan.md complete"
 ---

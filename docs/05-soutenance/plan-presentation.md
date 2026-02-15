@@ -143,23 +143,27 @@ qm start 32010
 
 | Phase | Contenu | Duree | Risque |
 |-------|---------|-------|--------|
-| M1 | Reseau : FortiGate + VLAN + QoS | Semaine 1 | Moyen (rollback = remettre DrayTek) |
-| M2 | Serveurs : cluster + SAN + migration VMs | Semaine 2 | Eleve (backup complet avant) |
-| M3 | AD : DC02 + replication | Semaine 3 | Faible (ajout, pas remplacement) |
-| M4 | WMS : migration vers cluster | Semaine 4 | Eleve (fenetre nuit, rollback prevu) |
-| M5 | Azure : landing zone + DC-AZURE + PRA | Semaine 5 | Moyen (nouveau, pas migration) |
-| M6 | VoIP : migration IPBX + QoS fine | Semaine 6 | Faible (parallele possible) |
+| M1 | Pare-feu : remplacement DrayTek/80D par FortiGate (100F/60F/40F) | 5 nuits (S1-S2) | Moyen (rollback = remettre DrayTek) |
+| M2 | Cluster : installation 2x R650xs + SAN ME5012 | 1 WE + 2 jours (S2-S3) | Faible (nouveau materiel, pas d'impact prod) |
+| M3 | Migration VMs : ~20 VMs du R630 vers cluster | 2 nuits WE (S3) | Eleve (WMS critique, backup complet avant) |
+| M4 | Azure : VPN site-a-site + DC replique + Site Recovery PRA | 3 jours (S4) | Moyen (nouveau, pas migration) |
+| M5 | QoS + VLAN : segmentation 4 VLAN + DSCP + QoS VoIP | 3 nuits (S5) | Moyen (rollback = desactiver VLAN) |
+| M6 | Tests : validation bout en bout + test PRA | 1 WE (S6) | Faible (validation, pas modification) |
 
 **Budget :**
 
 | Poste | Montant |
 |-------|---------|
-| Reseau (FortiGate x5 + AP + switches) | ~45k EUR |
-| Serveurs (2x R650xs + SAN) | ~55k EUR |
-| Azure (12 mois) | ~15k EUR |
-| Services (installation + formation) | ~12k EUR |
-| Marge imprevus (15%) | ~10k EUR |
-| **Total** | **~137k EUR** |
+| Securite (FortiGate x5 + licences 3 ans) | 17 520 EUR |
+| Virtualisation (2x Dell R650xs + ProSupport) | 30 000 EUR |
+| Stockage (SAN PowerVault ME5012) | 20 000 EUR |
+| Reseau (4x Cisco C9200 + SmartNet) | 12 000 EUR |
+| Azure PRA (3 ans, Reserved) | 11 232 EUR |
+| Supervision (PRTG + Veeam, 3 ans) | 7 500 EUR |
+| Connectivite Internet (1 an) | 12 840 EUR |
+| Main d'oeuvre | 8 300 EUR |
+| Marge imprevus (15%) | 17 909 EUR |
+| **Total** | **137 301 EUR** |
 
 **Responsable** : _a attribuer_
 

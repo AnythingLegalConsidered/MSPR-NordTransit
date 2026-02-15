@@ -2,7 +2,7 @@
 title: "Prerequis du lab POC"
 phase: "03-lab-poc"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 prerequis:
   - "Phase 02-conception terminee"
 ---

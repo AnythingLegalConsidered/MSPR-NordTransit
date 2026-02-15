@@ -94,6 +94,7 @@ Preparation de la presentation orale.
 | Fichier | Contenu |
 |---------|---------|
 | `plan-presentation.md` | Structure 30 min, script demo, questions types |
+| `MSPR_NordTransit_Presentation.pptx` | Diaporama de soutenance (version finale) |
 
 ### docs/_templates/
 

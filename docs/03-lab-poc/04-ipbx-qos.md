@@ -2,7 +2,7 @@
 title: "FreePBX et QoS VoIP"
 phase: "03-lab-poc"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 prerequis:
   - "Guide 03-active-directory.md complete"
   - "VM IPBX (32030) installee avec FreePBX"

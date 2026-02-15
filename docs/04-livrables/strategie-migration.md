@@ -2,7 +2,7 @@
 title: "Strategie de Migration"
 subtitle: "MSPR - NordTransit Logistics"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 version: "1.0"
 toc: true
 ---
@@ -15,7 +15,7 @@ toc: true
 |-------|--------|
 | Projet | MSPR - NordTransit Logistics |
 | Version | 1.0 |
-| Date | 2026-XX-XX |
+| Date | 2026-02-06 |
 | Auteurs | Equipe NordTransit (5 personnes) |
 | Statut | Valide |
 
@@ -546,12 +546,12 @@ Chaque phase dispose d'une procedure de retour arriere testee.
 | Guide | Phase concernee |
 |-------|-----------------|
 | `docs/03-lab-poc/00-prerequis-lab.md` | Toutes |
-| `docs/03-lab-poc/01-reseau-base.md` | M1, M5 |
-| `docs/03-lab-poc/02-firewall-vpn.md` | M1 |
-| `docs/03-lab-poc/03-hyperviseur-cluster.md` | M2 |
-| `docs/03-lab-poc/04-ad-dns.md` | M3, M4 |
-| `docs/03-lab-poc/05-wms-applicatif.md` | M3 |
-| `docs/03-lab-poc/06-azure-pra.md` | M4 |
+| `docs/03-lab-poc/01-reseau-lab.md` | M1, M5 |
+| `docs/03-lab-poc/02-pfsense-siege.md` | M1 |
+| `docs/03-lab-poc/03-active-directory.md` | M3 |
+| `docs/03-lab-poc/04-ipbx-qos.md` | M5 |
+| `docs/03-lab-poc/05-azure-tunnel.md` | M4 |
+| `docs/03-lab-poc/06-wms-simulation.md` | M3 |
 | `docs/03-lab-poc/07-tests-validation.md` | M6 |
 
 ### 10.3 Contacts d'escalade

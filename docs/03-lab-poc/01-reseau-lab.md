@@ -2,7 +2,7 @@
 title: "Creation du reseau lab"
 phase: "03-lab-poc"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 prerequis:
   - "Guide 00-prerequis-lab.md complete"
   - "Bridges vmbr1 et vmbr2 crees"

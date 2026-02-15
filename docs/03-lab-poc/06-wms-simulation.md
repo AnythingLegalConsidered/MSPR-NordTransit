@@ -2,7 +2,7 @@
 title: "WMS - Simulation sur Ubuntu"
 phase: "03-lab-poc"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 prerequis:
   - "Guide 03-active-directory.md complete (DNS fonctionnel)"
   - "VM WMS (32020) installee avec Ubuntu 22.04"

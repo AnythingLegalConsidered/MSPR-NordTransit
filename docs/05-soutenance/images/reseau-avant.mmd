@@ -1,0 +1,48 @@
+graph TB
+    subgraph INTERNET["INTERNET"]
+        ISP_LILLE["ISP Lille"]
+        ISP_WH1["ISP Lens - 200 Mbps"]
+        ISP_WH2["ISP Valenciennes - 200 Mbps"]
+        ISP_WH3["ISP Arras - 200 Mbps"]
+    end
+
+    subgraph SIEGE["SIEGE LILLE"]
+        FW_SIEGE["FortiGate 80D - EOL"]
+
+        subgraph VMS["Dell R630 - SERVEUR UNIQUE"]
+            DC01["DC01"]
+            DC02["DC02"]
+            WMS["WMS App+DB"]
+            IPBX["IPBX"]
+        end
+
+        NAS["NAS 6To - Backup non teste"]
+    end
+
+    subgraph WH1["LENS"]
+        FW_WH1["DrayTek 2860"]
+    end
+
+    subgraph WH2["VALENCIENNES"]
+        FW_WH2["DrayTek 2860"]
+    end
+
+    subgraph WH3["ARRAS"]
+        FW_WH3["DrayTek 2860"]
+    end
+
+    ISP_LILLE --> FW_SIEGE
+    ISP_WH1 --> FW_WH1
+    ISP_WH2 --> FW_WH2
+    ISP_WH3 --> FW_WH3
+
+    FW_SIEGE <-.->|"VPN IKEv1"| FW_WH1
+    FW_SIEGE <-.->|"VPN IKEv1"| FW_WH2
+    FW_SIEGE <-.->|"VPN IKEv1"| FW_WH3
+
+    style VMS fill:#ff6b6b,stroke:#c92a2a,color:#fff
+    style FW_SIEGE fill:#ff922b,stroke:#e8590c,color:#fff
+    style NAS fill:#ff922b,stroke:#e8590c,color:#fff
+    style FW_WH1 fill:#ff922b,stroke:#e8590c,color:#fff
+    style FW_WH2 fill:#ff922b,stroke:#e8590c,color:#fff
+    style FW_WH3 fill:#ff922b,stroke:#e8590c,color:#fff

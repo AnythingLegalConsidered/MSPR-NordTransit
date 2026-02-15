@@ -17,7 +17,7 @@ toc: true
 | Version | 1.0 |
 | Date | 2026-02-06 |
 | Auteurs | Equipe NordTransit (5 personnes) |
-| Statut | En cours |
+| Statut | Complet |
 | Classification | Confidentiel projet |
 
 ## Historique des modifications
@@ -35,7 +35,7 @@ toc: true
 
 NordTransit Logistics est une PME de logistique basee dans les Hauts-de-France. L'entreprise exploite **4 entrepots permanents** (Lille, Lens, Valenciennes, Arras) et **1 cross-dock saisonnier** active lors des pics e-commerce et des soldes.
 
-L'entreprise emploie environ **240 personnes** (jusqu'a 300 en haute saison), dont une centaine de postes informatiques, et dispose d'une equipe DSI de **4 personnes** (1 responsable, 1 administrateur itinerant, 1 technicien, 1 alternant).
+L'entreprise emploie environ **240 personnes** (jusqu'a 300 en haute saison), dont environ 65 postes informatiques, et dispose d'une equipe DSI de **4 personnes** (1 responsable, 1 administrateur itinerant, 1 technicien, 1 alternant).
 
 L'infrastructure SI actuelle presente des failles critiques : points uniques de defaillance (SPOF), securite perimetrique insuffisante, absence de plan de reprise d'activite (PRA), et qualite de service non maitrisee.
 

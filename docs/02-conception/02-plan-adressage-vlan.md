@@ -2,7 +2,7 @@
 title: "Plan d'adressage VLAN"
 phase: "02-conception"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 prerequis:
   - "Guide 01-architecture-cible.md lu"
 ---

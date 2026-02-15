@@ -2,7 +2,7 @@
 title: "pfSense Azure et tunnel IPsec"
 phase: "03-lab-poc"
 author: "Equipe NordTransit"
-date: 2026-XX-XX
+date: 2026-02-06
 prerequis:
   - "Guide 02-pfsense-siege.md complete"
   - "VM FW-AZURE (32005) installee avec pfSense"
