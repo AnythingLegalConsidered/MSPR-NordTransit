@@ -1,7 +1,7 @@
 ---
 title: "Note de Recommandation WMS"
 subtitle: "MSPR - NordTransit Logistics"
-author: "Equipe NordTransit"
+author: "Groupe 2 - PUICHAUD Ianis, ABOUYAALA Zaid, LANTSIGBLE Ojvind, LENOGUE Ewan, WANDA NKONG Blaise"
 date: 2026-02-06
 version: "1.0"
 toc: true
@@ -16,7 +16,7 @@ toc: true
 | Projet | MSPR - NordTransit Logistics |
 | Version | 1.0 |
 | Date | 2026-02-06 |
-| Auteurs | Equipe NordTransit (5 personnes) |
+| Auteurs | Groupe 2 : PUICHAUD Ianis, ABOUYAALA Zaid, LANTSIGBLE Ojvind, LENOGUE Ewan, WANDA NKONG Blaise |
 | Statut | Complet |
 
 ---

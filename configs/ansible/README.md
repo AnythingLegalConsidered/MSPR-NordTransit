@@ -43,14 +43,14 @@ Creer 2 bridges sur le noeud (Datacenter > Node > Network) :
 ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "mspr-lab"
 ```
 
-Copier la cle publique dans `group_vars/all.yml` (variable `ssh_public_key`).
+Copier la cle publique dans `inventory/group_vars/all/main.yml` (variable `ssh_public_key`).
 
 ### Vault (credentials Proxmox)
 
 ```bash
 # Creer le fichier vault avec le mot de passe Proxmox
-ansible-vault create vault.yml
-# Contenu :
+ansible-vault create inventory/group_vars/all/vault.yml
+# Contenu (voir vault.yml.example pour la liste complete) :
 # vault_proxmox_password: "votre_mot_de_passe_root"
 
 # Creer le fichier de deverrouillage automatique (ne PAS committer)
@@ -61,7 +61,7 @@ chmod 600 .vault_pass
 ## Configuration
 
 1. Editer `inventory/hosts.yml` : mettre l'IP de votre Proxmox
-2. Editer `group_vars/all.yml` : ajuster `proxmox_node` et `ssh_public_key`
+2. Editer `inventory/group_vars/all/main.yml` : ajuster `proxmox_node` et `ssh_public_key`
 3. Verifier les noms d'ISOs si differents
 
 ## Utilisation
@@ -104,7 +104,7 @@ ansible-playbook playbooks/99-teardown.yml
 Pour deployer sur un autre noeud :
 
 1. Decommenter `pve-ecole` dans `inventory/hosts.yml` et mettre l'IP
-2. Ajuster `proxmox_node` dans `group_vars/all.yml`
+2. Ajuster `proxmox_node` dans `inventory/group_vars/all/main.yml`
 3. Relancer les playbooks
 
 ## Structure
@@ -113,7 +113,9 @@ Pour deployer sur un autre noeud :
 configs/ansible/
 ├── ansible.cfg                  # Config Ansible
 ├── inventory/hosts.yml          # Noeuds Proxmox (pve02 + ecole)
-├── group_vars/all.yml           # Variables : specs VMs, reseaux, ISOs
+├── inventory/group_vars/all/
+│   ├── main.yml                 # Variables : specs VMs, reseaux, ISOs
+│   └── vault.yml.example        # Template pour les secrets (vault)
 ├── playbooks/
 │   ├── 00-preflight.yml         # Checks avant deploiement
 │   ├── 01-create-vms.yml        # Creation des 7 VMs

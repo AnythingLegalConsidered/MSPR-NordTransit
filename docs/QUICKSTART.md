@@ -1,7 +1,7 @@
 ---
 title: "Quick Start - Guide de demarrage rapide"
 author: "Equipe NordTransit"
-date: 2026-02-07
+date: 2026-02-06
 ---
 
 # Quick Start - MSPR NordTransit Logistics

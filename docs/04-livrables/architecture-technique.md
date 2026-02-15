@@ -1,7 +1,7 @@
 ---
 title: "Document d'Architecture Technique"
 subtitle: "MSPR - NordTransit Logistics"
-author: "Equipe NordTransit"
+author: "Groupe 2 - PUICHAUD Ianis, ABOUYAALA Zaid, LANTSIGBLE Ojvind, LENOGUE Ewan, WANDA NKONG Blaise"
 date: 2026-02-06
 version: "1.0"
 toc: true
@@ -16,7 +16,7 @@ toc: true
 | Projet | MSPR - NordTransit Logistics |
 | Version | 1.0 |
 | Date | 2026-02-06 |
-| Auteurs | Equipe NordTransit (5 personnes) |
+| Auteurs | Groupe 2 : PUICHAUD Ianis, ABOUYAALA Zaid, LANTSIGBLE Ojvind, LENOGUE Ewan, WANDA NKONG Blaise |
 | Statut | Complet |
 | Classification | Confidentiel projet |
 
@@ -24,8 +24,8 @@ toc: true
 
 | Version | Date | Auteur | Description |
 |---------|------|--------|-------------|
-| 0.1 | 2026-02-06 | Equipe | Squelette initial |
-| 1.0 | 2026-02-06 | Equipe | Version complete avec architecture existante et cible |
+| 0.1 | 2026-02-06 | Groupe 2 | Squelette initial |
+| 1.0 | 2026-02-06 | Groupe 2 | Version complete avec architecture existante et cible |
 
 ---
 
@@ -38,6 +38,8 @@ NordTransit Logistics est une PME de logistique basee dans les Hauts-de-France. 
 L'entreprise emploie environ **240 personnes** (jusqu'a 300 en haute saison), dont environ 65 postes informatiques, et dispose d'une equipe DSI de **4 personnes** (1 responsable, 1 administrateur itinerant, 1 technicien, 1 alternant).
 
 L'infrastructure SI actuelle presente des failles critiques : points uniques de defaillance (SPOF), securite perimetrique insuffisante, absence de plan de reprise d'activite (PRA), et qualite de service non maitrisee.
+
+**Equipe projet (Groupe 2)** : PUICHAUD Ianis, ABOUYAALA Zaid, LANTSIGBLE Ojvind, LENOGUE Ewan, WANDA NKONG Blaise.
 
 ### 1.2 Objectif du document
 
