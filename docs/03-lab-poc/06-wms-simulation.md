@@ -17,9 +17,10 @@ prerequis:
 
 ## Prerequis
 
-- [ ] VM WMS (32020) avec Ubuntu 22.04 installe
-- [ ] IP configuree : 172.16.132.20
+- [ ] VM WMS (32020) avec Ubuntu 22.04 installe (guide 01, etape 2c)
+- [ ] IP statique configuree : 172.16.132.20 (guide 01, etape 3b)
 - [ ] DNS pointe vers DC01 (172.16.132.10)
+- [ ] Utilisateur : `wmsadmin` (cree pendant l'installation Ubuntu)
 
 ## Etapes
 

@@ -43,6 +43,18 @@ Configuration cible :
 - **DPD** : Dead Peer Detection active (detection de perte de tunnel)
 - **Failover** : Bascule automatique sur lien 4G/5G
 
+#### Justification du choix IKEv2
+
+| Critere | IKEv2 | OpenVPN | WireGuard | IPsec/L2TP |
+|---------|-------|---------|-----------|------------|
+| Compatibilite FortiGate | Native | Custom (SSL-VPN) | Non supporte | Native |
+| Debit sur lien 200 Mbps | ~180 Mbps | ~120 Mbps | ~195 Mbps | ~150 Mbps |
+| Reconnexion apres coupure | Automatique (MOBIKE) | Lente (~30s) | Rapide | Manuelle |
+| Complexite configuration | Moyenne | Moyenne | Faible | Haute |
+| Expertise DSI disponible | Oui (existant) | Non | Non | Partielle |
+| Standard industriel | IETF RFC 7296 | Open-source | Nouveau (2020) | Ancien (RFC 3193) |
+| **Verdict** | **Retenu** — natif FortiGate, reconnexion auto, expertise DSI | Bon pour remote access, pas pour site-to-site | DSI non formee, pas supporte FortiGate | Obsolete, complexe |
+
 ### 3. Segmenter par VLAN
 
 **Pourquoi** : Sans VLAN, tout le trafic est dans le meme broadcast domain. Un terminal compromis peut scanner tout le reseau.

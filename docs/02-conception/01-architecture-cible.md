@@ -45,6 +45,19 @@ prerequis:
 
 VPN site-a-site : IKEv2 avec AES-256, Dead Peer Detection, failover automatique.
 
+#### Justification du choix FortiGate
+
+| Critere | FortiGate | Palo Alto | Sophos XG | pfSense (commercial) |
+|---------|-----------|-----------|-----------|----------------------|
+| Prix (siege) | ~3 500 EUR (100F) | ~8 000 EUR (PA-440) | ~4 500 EUR (XGS 2100) | ~1 500 EUR (Netgate 6100) |
+| Prix (site distant) | ~800 EUR (60F) | ~3 000 EUR (PA-220) | ~1 200 EUR (XGS 87) | ~500 EUR (Netgate 2100) |
+| Gestion centralisee | FortiManager (inclus) | Panorama (licence) | Sophos Central (cloud) | Non nativement |
+| VPN IKEv2 natif | Oui | Oui | Oui | Oui |
+| QoS integree | DSCP + shaping | Oui (QoS profiles) | Oui | Limitee (PRIQ/HFSC) |
+| Formation DSI existante | Partielle (FortiGate 80D) | Aucune | Aucune | Aucune |
+| Support constructeur | FortiCare 24/7 | Premium (cher) | Enhanced | Communautaire |
+| **Verdict** | **Retenu** — meilleur rapport prix/fonctionnalites + continuite avec l'existant | Trop cher pour une PME | Bon mais pas de continuite | Pas de gestion centralisee |
+
 ### 3. Concevoir la virtualisation HA
 
 **Pourquoi** : 2 serveurs + SAN = suppression du SPOF serveur unique.

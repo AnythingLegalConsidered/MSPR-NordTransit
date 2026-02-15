@@ -45,7 +45,7 @@ La VM a 3 NICs dans Proxmox. L'ordre des `vtnetX` dans pfSense correspond a l'or
 3. Accepter les conditions (Accept)
 4. Selectionner **Install** → **Continue**
 
-<!-- Screenshot: ecran d'accueil installer pfSense -->
+*(Captures d'ecran disponibles dans `docs/03-lab-poc/02-pfsense/`)*
 
 #### Partitionnement ZFS
 
@@ -54,15 +54,15 @@ La VM a 3 NICs dans Proxmox. L'ordre des `vtnetX` dans pfSense correspond a l'or
    - Aller sur **T Pool Type/Disks** → Entree
    - Selectionner **stripe** (Stripe - No Redundancy) → OK
 
-<!-- Screenshot: selection stripe -->
+*(Voir capture dans `02-pfsense/`)*
 
 7. **Cocher le disque** `da0` (QEMU HARDDISK) avec la touche **Espace** → OK
 
-<!-- Screenshot: selection disque da0 -->
+*(Voir capture dans `02-pfsense/`)*
 
 8. Verifier que l'ecran affiche **"stripe: 1 disk"** → selectionner **>>> Install**
 
-<!-- Screenshot: ZFS config avec 1 disk -->
+*(Voir capture dans `02-pfsense/`)*
 
 9. Confirmer avec **YES** (destruction des donnees du disque)
 10. Attendre la copie des fichiers
@@ -91,7 +91,7 @@ Enter the OPT1 interface name: vtnet1
 Do you want to proceed [y|n]? y
 ```
 
-<!-- Screenshot: assignation des interfaces -->
+*(Voir capture dans `02-pfsense/`)*
 
 > **Attention** : Les logs php-fpm peuvent s'afficher par-dessus les prompts. C'est normal, tapez la reponse quand meme.
 
@@ -145,7 +145,7 @@ LAN (lan)   -> vtnet0  -> v4: 172.16.132.1/24
 OPT1 (opt1) -> vtnet1  -> v4: 10.100.0.254/24
 ```
 
-<!-- Screenshot: menu principal avec les 3 IPs configurees -->
+*(Voir capture dans `02-pfsense/`)*
 
 > **FW-SIEGE est operationnel cote console.** La suite (web UI) se fait apres configuration d'une VM sur le LAN siege.
 

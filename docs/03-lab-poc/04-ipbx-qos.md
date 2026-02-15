@@ -29,16 +29,18 @@ prerequis:
 
 **Pourquoi** : FreePBX simule l'IPBX de NordTransit. C'est la reference open-source pour PBX.
 
-1. Booter la VM 32030 sur l'ISO FreePBX
-2. Suivre l'installeur (choix par defaut)
-3. Configurer le reseau :
-   - IP : 172.16.132.30
-   - Masque : 255.255.255.0
-   - Gateway : 172.16.132.1
-   - DNS : 172.16.132.10
+> **Prerequis** : La VM IPBX (32030) doit etre creee et l'OS SangomaOS installe
+> (voir guide 01, etape 2d). L'IP statique doit etre configuree (guide 01, etape 3c).
 
-4. Acceder a l'interface web : `http://172.16.132.30`
-5. Creer le compte admin
+L'installation SangomaOS est automatique (guide 01). Apres le reboot :
+
+1. Se connecter en SSH : `ssh root@172.16.132.30` (mot de passe : `SangomaDefaultPassword`)
+2. Verifier le reseau : `ip a` → doit afficher 172.16.132.30 sur eth0
+3. Acceder a l'interface web : `http://172.16.132.30`
+4. A la premiere connexion web, FreePBX demande de creer un compte admin :
+   - Username : `admin`
+   - Password : `admin` (lab uniquement)
+5. Cliquer **Setup System** → selectionner la langue → **Submit**
 
 ### 2. Configurer les extensions SIP
 
@@ -72,12 +74,18 @@ Sur pfSense → Firewall → Traffic Shaper :
 
 **Pourquoi** : Il faut saturer le reseau pour prouver que la QoS protege la VoIP.
 
-Depuis le WMS (iperf3 installe au guide 06) :
+Depuis le WMS :
 ```bash
-# Prereq : iperf3 doit etre installe sur WMS (fait au guide 06-wms-simulation.md)
+# Installer iperf3 si pas encore fait
+sudo apt install iperf3 -y
+
 # Generer du trafic "lourd" (simuler charge reseau)
+# Cote serveur (sur le host Proxmox ou une autre VM) : iperf3 -s
 iperf3 -c 172.16.132.1 -t 60 -b 100M
 ```
+
+> **Note** : iperf3 doit aussi etre installe cote serveur. Si vous utilisez le host Proxmox :
+> `apt install iperf3 -y && iperf3 -s`
 
 Pendant ce temps, passer un appel SIP entre les extensions 1001 et 1002.
 

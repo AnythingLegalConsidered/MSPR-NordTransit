@@ -28,11 +28,30 @@ prerequis:
 
 **Pourquoi** : FW-AZURE simule la VPN Gateway Azure.
 
-Installation identique a FW-SIEGE (guide 02), mais avec :
-- **LAN** : 10.100.0.1/24 (reseau Azure)
-- **WAN** : interface sur vmbr2 pour le tunnel
+> **Rappel** : FW-AZURE a **1 seul NIC** sur vmbr2 (cree au guide 01).
 
-> Note : Dans le lab, les 2 pfSense sont sur le meme bridge vmbr2 — ce bridge simule "Internet".
+Installation identique a FW-SIEGE (guide 02) : boot sur ISO → Install → ZFS stripe → reboot.
+
+Apres reboot, assigner les interfaces :
+```
+Should VLANs be set up now [y|n]? n
+Enter the WAN interface name: vtnet0
+Enter the LAN interface name: (laisser vide, Entree)
+```
+
+> **FW-AZURE n'a pas de WAN "internet"** — son unique interface sert a la fois pour le LAN Azure
+> et pour le tunnel. Configurer l'IP via option 2 du menu :
+
+| Question | Reponse |
+|----------|---------|
+| Interface number | `1` (WAN) |
+| Configure IPv4 via DHCP? | `n` |
+| Enter new IPv4 address | `10.100.0.1` |
+| Enter subnet bit count | `24` |
+| Enter IPv4 gateway | *(Entree — pas de gateway)* |
+
+> **Fonctionnement du tunnel** : Les 2 pfSense (FW-SIEGE OPT1 = 10.100.0.254 et FW-AZURE WAN = 10.100.0.1)
+> sont sur le meme bridge vmbr2 qui simule "Internet". Le tunnel IPsec passe par ce bridge.
 
 ### 2. Configurer le tunnel IPsec cote SIEGE
 
@@ -90,7 +109,18 @@ ping 172.16.132.10
 
 **Pourquoi** : DC-AZURE = 3eme DC dans le cloud. Si le siege est detruit, AD survit.
 
-Sur DC-AZURE (DNS pointe vers DC01 via le tunnel : 172.16.132.10) :
+Sur DC-AZURE, d'abord configurer le DNS pour pointer vers DC01 **via le tunnel** :
+```powershell
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses 172.16.132.10
+```
+
+Verifier que le DNS fonctionne a travers le tunnel :
+```powershell
+nslookup lab.local 172.16.132.10
+# Doit repondre avec l'IP de DC01
+```
+
+Puis installer et promouvoir :
 
 ```powershell
 # Installer AD DS

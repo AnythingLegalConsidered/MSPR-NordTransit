@@ -17,9 +17,10 @@ prerequis:
 
 ## Prerequis
 
-- [ ] DC01 et DC02 installes avec Windows Server 2022
-- [ ] IP statiques configurees (DC01: .10, DC02: .11)
-- [ ] pfSense siege operationnel (gateway .1)
+- [ ] DC01 et DC02 installes avec Windows Server 2022 (guide 01, etape 2b)
+- [ ] IP statiques configurees (guide 01, etape 3a) : DC01 = .10, DC02 = .11
+- [ ] pfSense siege operationnel (guide 02) — gateway .1 repond au ping
+- [ ] DNS temporaire sur DC01 et DC02 = `8.8.8.8` (configure au guide 01)
 
 ## Etapes
 
@@ -44,7 +45,13 @@ Install-ADDSForest `
     -Force:$true
 ```
 
-**Resultat attendu** : Le serveur reboot, se reconnecte en tant que LAB\Administrator.
+**Resultat attendu** : Le serveur reboot automatiquement. Se reconnecter via la console Proxmox
+en tant que `LAB\Administrator` / `P@ssw0rd!`.
+
+> **Apres promotion** : Changer le DNS de DC01 vers lui-meme :
+> ```powershell
+> Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses 127.0.0.1,172.16.132.11
+> ```
 
 ### 2. Verifier DC01
 
@@ -65,7 +72,12 @@ dcdiag /s:DC01
 
 **Pourquoi** : DC02 = replique de DC01. Si DC01 tombe, DC02 repond aux requetes d'authentification.
 
-Sur DC02 (DNS pointe vers DC01 : 172.16.132.10) :
+Sur DC02, d'abord changer le DNS pour pointer vers DC01 :
+```powershell
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses 172.16.132.10
+```
+
+Puis installer et promouvoir :
 
 ```powershell
 # Installer le role

@@ -29,7 +29,7 @@ prerequis:
 NordTransit Logistics est une PME de logistique basee dans les Hauts-de-France :
 - **4 entrepots permanents** : Lille (siege), Lens, Valenciennes, Arras
 - **1 cross-dock saisonnier** : active pendant les pics e-commerce/soldes
-- **~240 employes** dont ~100 postes informatiques
+- **~240 employes** dont ~65 postes informatiques
 - **Equipe DSI** : 4 personnes (1 responsable + 1 admin itinerant + 1 technicien + 1 alternant)
 
 ### 2. Comprendre le coeur de metier
