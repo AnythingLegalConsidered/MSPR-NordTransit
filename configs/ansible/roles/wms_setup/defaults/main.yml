@@ -1,0 +1,10 @@
+---
+# Variables par defaut du role wms_setup
+wms_db_name: "wms_test"
+wms_db_user: "root"
+wms_packages:
+  - mysql-server
+  - iperf3
+  - net-tools
+  - curl
+  - python3-pymysql

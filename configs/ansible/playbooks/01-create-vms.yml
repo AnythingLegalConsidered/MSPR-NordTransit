@@ -55,13 +55,17 @@
         label: "{{ item.name }} ({{ item.vmid }})"
 
     # -- Ajouter cloud-init sur la VM WMS --
+    - name: "Verifier si cloud-init deja configure sur WMS"
+      ansible.builtin.shell: grep -q "ide0:" /etc/pve/qemu-server/32020.conf
+      register: cloudinit_check
+      failed_when: false
+      changed_when: false
+
     - name: "Ajouter lecteur cloud-init sur WMS"
       ansible.builtin.shell: >
         qm set 32020 --ide0 {{ proxmox_storage_vms }}:cloudinit
-      args:
-        creates: "/etc/pve/qemu-server/32020.conf"
+      when: cloudinit_check.rc != 0
       changed_when: true
-      when: true
 
     - name: "Ecrire cle SSH dans fichier temporaire"
       ansible.builtin.copy:

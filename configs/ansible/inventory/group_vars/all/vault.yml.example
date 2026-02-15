@@ -1,6 +1,15 @@
 ---
-# Vault variables — create vault.yml with:
+# Vault variables — Credentials du lab NordTransit
+#
+# Creer le fichier vault.yml chiffre :
 #   ansible-vault create inventory/group_vars/all/vault.yml
+#
+# Ou copier ce fichier et le chiffrer :
+#   cp vault.yml.example vault.yml
+#   ansible-vault encrypt vault.yml
 #
 # Required variables:
 vault_proxmox_password: "YOUR_PROXMOX_ROOT_PASSWORD"
+vault_windows_password: "az4826QS6284**"      # DC Administrator
+vault_pfsense_password: "pfsense"              # pfSense admin
+vault_freepbx_password: "SangomaDefaultPassword"  # FreePBX root
