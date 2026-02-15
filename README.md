@@ -1,5 +1,7 @@
 # MSPR - NordTransit Logistics
 
+> **Equipe** : PUICHAUD Ianis, ABOUYAALA Zaid, LANTSIGBLE Ojvind, LENOGUE Ewan, WANDA NKONG Blaise
+
 NordTransit, c'est une PME logistique dans les Hauts-de-France : 4 entrepots, 240 employes, et un SI qui tient avec du scotch. On modernise tout.
 
 ## Le probleme
@@ -96,7 +98,9 @@ Ce qu'on rend au jury :
 | Note WMS | Analyse SPOF, recommandations HA | [`note-recommandation-wms.md`](docs/04-livrables/note-recommandation-wms.md) |
 | Guide depannage ToIP | Arbre decision N1/N2 | [`guide-depannage-toip.md`](docs/04-livrables/guide-depannage-toip.md) |
 
-> Exporter en PDF/DOCX : `python scripts/build_docs.py --all --format pdf` (necessite [pandoc](https://pandoc.org/installing.html))
+Les exports DOCX sont disponibles dans [`docs/04-livrables/`](docs/04-livrables/) (fichiers `.docx`).
+
+> Regenerer les exports : `python scripts/build_corporate.py` (DOCX stylise) ou `python scripts/build_docs.py --all --format pdf` (PDF via [pandoc](https://pandoc.org/installing.html))
 
 ## Reproduire le lab
 
@@ -110,6 +114,12 @@ Ce qu'on rend au jury :
 
 ## Soutenance
 
-- Plan de presentation (20 min + 30 min jury) : [`docs/05-soutenance/plan-presentation.md`](docs/05-soutenance/plan-presentation.md)
+- Plan de presentation (20 min + 30 min jury) : [`plan-presentation.md`](docs/05-soutenance/plan-presentation.md)
+- Diaporama : [`MSPR_NordTransit_Presentation.pptx`](docs/05-soutenance/MSPR_NordTransit_Presentation.pptx)
+
 - Glossaire : [`docs/glossaire.md`](docs/glossaire.md)
+
+## Navigation
+
+- **Structure du repo** : [`STRUCTURE.md`](STRUCTURE.md) — description de chaque dossier et fichier
 - [Notion projet](https://www.notion.so/MSPR-NordTransit-Logistics-2e095ddfecb18106aee6f23d0c83a063)
