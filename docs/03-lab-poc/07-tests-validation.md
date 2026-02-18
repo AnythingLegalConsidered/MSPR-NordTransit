@@ -37,9 +37,9 @@ prerequis:
    # queue qServers on vtnet0 priority 5
    # queue qDefault on vtnet0 priq( default )
    ```
-2. Saturation du reseau LAN avec iperf3 (500 Mbits/sec entre WMS et pve02) :
+2. Saturation du reseau LAN avec iperf3 (500 Mbits/sec entre WMS et l'hyperviseur) :
    ```bash
-   # Serveur sur pve02
+   # Serveur sur l'hyperviseur Proxmox
    iperf3 -s -B 172.16.132.254 -p 5201
    # Client sur WMS
    iperf3 -c 172.16.132.254 -p 5201 -t 20 -b 500M

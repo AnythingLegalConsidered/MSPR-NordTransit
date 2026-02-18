@@ -668,7 +668,7 @@ Le lab POC utilise des equivalents open-source pour simuler l'architecture cible
 | Parametre | Valeur |
 |-----------|--------|
 | Plateforme | Proxmox VE 9.1.4 |
-| Noeud | pve02 (60 Go RAM, 720 Go stockage) |
+| Noeud | Noeud Proxmox du lab (min. 32 Go RAM, 200 Go stockage — valide sur le cluster ecole et sur homelab perso) |
 | Reseau lab | 172.16.132.0/24 (siege) + 10.100.0.0/24 (Azure) |
 | Nombre de VMs | 7 (2x pfSense, 3x Windows Server, 1x Ubuntu, 1x FreePBX) |
 | Date des tests | 2026-02-06 |
@@ -680,7 +680,7 @@ Le lab POC utilise des equivalents open-source pour simuler l'architecture cible
 **Conditions du test** :
 - QoS PRIQ configuree sur pfSense : qVoIP (priorite 7), qServers (priorite 5), qDefault (priorite 1)
 - 7 regles floating DSCP pour classifier le trafic SIP, RTP, DNS, AD, MySQL, ICMP
-- Saturation du LAN a 500 Mbits/sec via iperf3 (WMS → pve02)
+- Saturation du LAN a 500 Mbits/sec via iperf3 (WMS → hyperviseur Proxmox)
 - Mesure de latence vers IPBX (172.16.132.30) pendant la saturation
 
 | Metrique | Seuil acceptable | Resultat mesure | Statut |

@@ -96,7 +96,7 @@ date: 2026-02-07
 **Commandes preparees (copier-coller) :**
 
 ```bash
-# Test QoS - Terminal 1 (sur pve02)
+# Test QoS - Terminal 1 (sur l'hyperviseur Proxmox)
 iperf3 -s -B 172.16.132.254 -p 5201
 
 # Test QoS - Terminal 2 (sur WMS via SSH)

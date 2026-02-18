@@ -211,10 +211,10 @@ version: "1.0"
 ## 9. POC / Lab
 
 **55. Pourquoi Proxmox pour le lab et pas VMware ou Hyper-V ?**
-> Proxmox est gratuit, open source, et deja installe sur le serveur de lab (pve02). VMware vSphere necessiterait des licences. Hyper-V = pas de version gratuite standalone equivalente. Pour un POC de validation, Proxmox est parfait.
+> Proxmox est gratuit, open source, et deja installe sur le cluster de l'ecole. VMware vSphere necessiterait des licences. Hyper-V = pas de version gratuite standalone equivalente. Pour un POC de validation, Proxmox est parfait. Note : le lab a aussi ete pre-valide sur un homelab personnel avant deploiement sur le cluster ecole.
 
 **56. Combien de RAM et stockage le lab consomme-t-il ?**
-> 7 VMs : 2+2+4+4+4+2+2 = 20 Go RAM. pve02 a 60 Go (52 disponibles). Stockage : ~8-32 Go par VM = ~100-150 Go sur 720 Go disponibles. Le lab tient largement sur un seul hyperviseur.
+> 7 VMs : 2+2+4+4+4+2+2 = 20 Go RAM. Le noeud Proxmox du cluster ecole dispose de suffisamment de ressources (minimum 32 Go RAM necessaires). Stockage : ~8-32 Go par VM = ~100-150 Go. Le lab tient largement sur un seul hyperviseur.
 
 **57. pfSense simule des FortiGate. Quelles sont les limites ?**
 > pfSense n'a pas d'UTM (IPS, antivirus, web filter). Pas de FortiGuard. L'interface est differente. Mais les fonctions testees (routage, firewall, QoS PRIQ, VPN IPsec) sont equivalentes. Le POC valide les concepts, pas les produits specifiques.
@@ -351,7 +351,7 @@ version: "1.0"
 > ISOs d'evaluation gratuites sur le site Microsoft (180 jours). Suffisant pour un lab de validation. En production, NordTransit a des licences via un contrat de volume (Open License ou CSP). Les liens de telechargement sont dans le guide 00.
 
 **95. Le vault Ansible contient les secrets. Comment y acceder ?**
-> Le fichier `.vault_pass` contient le mot de passe du vault. Il est sur pve02 dans `/root/mspr-ansible/.vault_pass`. Mot de passe : communique hors-bande (pas dans le repo). Le fichier `vault.yml.example` montre la structure attendue. Commande : `ansible-vault decrypt --vault-password-file .vault_pass`.
+> Le fichier `.vault_pass` contient le mot de passe du vault. Il est sur l'hyperviseur Proxmox dans `/root/mspr-ansible/.vault_pass`. Mot de passe : communique hors-bande (pas dans le repo). Le fichier `vault.yml.example` montre la structure attendue. Commande : `ansible-vault decrypt --vault-password-file .vault_pass`.
 
 ---
 
