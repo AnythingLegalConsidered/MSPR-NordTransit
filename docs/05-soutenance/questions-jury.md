@@ -8,6 +8,8 @@ version: "1.0"
 
 # Questions Jury — Preparation Soutenance
 
+> **Navigation soutenance** : [**Revision express**](revision-express.md) · [Briefing](briefing-soutenance.md) · [Plan](plan-presentation.md) · [Carnet](carnet-soutenance.md) · [Aide-memoire](aide-memoire.md) · [Cheatsheet demo](cheatsheet-demo.md) · [Plan B](guide-captures-plan-b.md) · **Questions jury** · [Fiche Ref](fiche-reference-jourj.md)
+
 > 100 questions classees du plus basique au plus difficile.
 > Chaque question est suivie d'une **piste de reponse** pour aiguiller.
 > Les sections 13 (pieges) et 14 (reproductibilite) sont les plus dangereuses.

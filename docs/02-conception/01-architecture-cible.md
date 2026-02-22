@@ -13,6 +13,8 @@ prerequis:
 
 > Definir et justifier l'architecture cible qui repond a chaque point de douleur identifie.
 > Ce document sert de base au livrable "Document d'architecture technique".
+>
+> **Livrable formel** : la version complete remise au jury est dans [`architecture-technique.md`](../04-livrables/architecture-technique.md) (DAT complet avec schemas, budget, specs).
 
 ## Prerequis
 

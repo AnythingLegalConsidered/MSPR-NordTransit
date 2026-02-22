@@ -5,6 +5,8 @@ date: 2026-02-21
 
 # Guide Captures — Plan B Demo
 
+> **Navigation soutenance** : [**Revision express**](revision-express.md) · [Briefing](briefing-soutenance.md) · [Plan](plan-presentation.md) · [Carnet](carnet-soutenance.md) · [Aide-memoire](aide-memoire.md) · [Cheatsheet demo](cheatsheet-demo.md) · **Plan B** · [Questions jury](questions-jury.md) · [Fiche Ref](fiche-reference-jourj.md)
+
 > A faire ce weekend (21-22/02). Objectif : avoir des preuves statiques en cas de panne live lundi.
 
 ## Methode de capture

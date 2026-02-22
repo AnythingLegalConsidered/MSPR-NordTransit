@@ -11,6 +11,8 @@ prerequis:
 
 # Strategie de migration
 
+> **Livrable formel** : ce document est un resume de conception. La version complete remise au jury est dans [`strategie-migration.md`](../04-livrables/strategie-migration.md) (6 phases detaillees, planning, rollback).
+
 ## Objectif
 
 > Definir le plan de migration de l'infrastructure existante vers la cible,

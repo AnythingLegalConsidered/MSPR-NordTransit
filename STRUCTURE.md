@@ -89,13 +89,22 @@ Documents finaux remis au jury. Ce sont les **vrais livrables** de la MSPR.
 
 ### docs/05-soutenance/
 
-Preparation de la presentation orale.
+Preparation de la presentation orale (20 min expose + 30 min jury).
 
 | Fichier | Contenu |
 |---------|---------|
-| `plan-presentation.md` | Structure 30 min, script demo, questions types |
+| `revision-express.md` | **Document unique de revision** — tout en 5 pages |
+| `briefing-soutenance.md` | Script detaille par slide, qui dit quoi |
+| `plan-presentation.md` | Structure 20+30 min, timing par partie |
+| `carnet-soutenance.md` | Notebook condense : chiffres cles, arguments, le jour J |
+| `fiche-reference-jourj.md` | Fiche detaillee a garder ouverte pendant la soutenance (Ctrl+F) |
+| `aide-memoire.md` | Fiches memo rapides (budget, VMs, resultats tests) |
+| `cheatsheet-demo.md` | Commandes copy-paste pour la demo live |
+| `guide-captures-plan-b.md` | Plan B : captures d'ecran si la demo plante |
 | `questions-jury.md` | 100 questions classees par difficulte avec pistes de reponse |
 | `MSPR_NordTransit_Presentation.pptx` | Diaporama de soutenance (version finale) |
+| `scripts/` | Scripts bash d'automatisation de la demo |
+| `images/` | Captures d'ecran pour les slides |
 
 ### docs/_templates/
 

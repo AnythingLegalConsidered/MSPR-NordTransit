@@ -7,6 +7,8 @@ date: 2026-02-07
 
 # Plan de presentation - Soutenance MSPR
 
+> **Navigation soutenance** : [**Revision express**](revision-express.md) · [Briefing](briefing-soutenance.md) · **Plan** · [Carnet](carnet-soutenance.md) · [Aide-memoire](aide-memoire.md) · [Cheatsheet demo](cheatsheet-demo.md) · [Plan B](guide-captures-plan-b.md) · [Questions jury](questions-jury.md) · [Fiche Ref](fiche-reference-jourj.md)
+
 ## Objectif
 
 > Structurer la presentation de soutenance et repartir les parties entre les 5 membres.

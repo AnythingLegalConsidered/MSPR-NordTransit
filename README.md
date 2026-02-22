@@ -114,8 +114,20 @@ Les exports DOCX sont disponibles dans [`docs/04-livrables/`](docs/04-livrables/
 
 ## Soutenance
 
-- Plan de presentation (20 min + 30 min jury) : [`plan-presentation.md`](docs/05-soutenance/plan-presentation.md)
-- Diaporama : [`MSPR_NordTransit_Presentation.pptx`](docs/05-soutenance/MSPR_NordTransit_Presentation.pptx)
+Tout pour preparer la presentation orale (20 min expose + 30 min jury) :
+
+| Document | Quand l'utiliser | Fichier |
+|----------|------------------|---------|
+| **Revision express** | **Un seul doc pour tout reviser (5 pages)** | [**`revision-express.md`**](docs/05-soutenance/revision-express.md) |
+| **Fiche Reference Jour J** | **Details techniques a garder ouvert pendant la soutenance** | [**`fiche-reference-jourj.md`**](docs/05-soutenance/fiche-reference-jourj.md) |
+| Briefing | Comprendre la structure, qui dit quoi | [`briefing-soutenance.md`](docs/05-soutenance/briefing-soutenance.md) |
+| Plan de presentation | Timing et contenu par slide | [`plan-presentation.md`](docs/05-soutenance/plan-presentation.md) |
+| Carnet soutenance | Notebook condense pour le jour J | [`carnet-soutenance.md`](docs/05-soutenance/carnet-soutenance.md) |
+| Aide-memoire | Fiches chiffres cles (budget, VMs, tests) | [`aide-memoire.md`](docs/05-soutenance/aide-memoire.md) |
+| Cheatsheet demo | Commandes copy-paste pour la demo live | [`cheatsheet-demo.md`](docs/05-soutenance/cheatsheet-demo.md) |
+| Plan B | Captures d'ecran si la demo plante | [`guide-captures-plan-b.md`](docs/05-soutenance/guide-captures-plan-b.md) |
+| Questions jury | 100 Q&A classees par difficulte | [`questions-jury.md`](docs/05-soutenance/questions-jury.md) |
+| Diaporama | Slides de presentation | [`MSPR_NordTransit_Presentation.pptx`](docs/05-soutenance/MSPR_NordTransit_Presentation.pptx) |
 
 - Glossaire : [`docs/glossaire.md`](docs/glossaire.md)
 

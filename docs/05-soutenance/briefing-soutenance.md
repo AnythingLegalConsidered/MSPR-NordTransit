@@ -8,6 +8,8 @@ version: "1.0"
 
 # BRIEFING SOUTENANCE MSPR — 23/02/2026
 
+> **Navigation soutenance** : [**Revision express**](revision-express.md) · **Briefing** · [Plan](plan-presentation.md) · [Carnet](carnet-soutenance.md) · [Aide-memoire](aide-memoire.md) · [Cheatsheet demo](cheatsheet-demo.md) · [Plan B](guide-captures-plan-b.md) · [Questions jury](questions-jury.md) · [Fiche Ref](fiche-reference-jourj.md)
+
 ## Format de l'epreuve
 
 | Bloc | Duree | Contenu |

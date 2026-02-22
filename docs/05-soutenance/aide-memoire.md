@@ -6,6 +6,8 @@ date: 2026-02-18
 
 # Aide-memoire Soutenance — 23/02
 
+> **Navigation soutenance** : [**Revision express**](revision-express.md) · [Briefing](briefing-soutenance.md) · [Plan](plan-presentation.md) · [Carnet](carnet-soutenance.md) · **Aide-memoire** · [Cheatsheet demo](cheatsheet-demo.md) · [Plan B](guide-captures-plan-b.md) · [Questions jury](questions-jury.md) · [Fiche Ref](fiche-reference-jourj.md)
+
 > A imprimer ou garder sous la main. Chaque section pointe vers le document detaille.
 
 ---

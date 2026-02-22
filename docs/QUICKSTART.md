@@ -61,9 +61,18 @@ Tu es ici
 **Raccourci** : si tu as Ansible, les playbooks dans `configs/ansible/` automatisent la creation des VMs.
 
 ### "Je dois preparer la soutenance"
-1. Lis `docs/05-soutenance/plan-presentation.md` — structure complete
-2. Choisis ta partie (Contexte / Archi / Demo / Migration / Conclusion)
-3. Les livrables dans `docs/04-livrables/` sont tes sources pour les slides
+
+**Ordre de lecture recommande :**
+
+1. `docs/05-soutenance/briefing-soutenance.md` — comprendre la structure, qui dit quoi
+2. `docs/05-soutenance/plan-presentation.md` — timing et contenu par slide
+3. `docs/05-soutenance/carnet-soutenance.md` — notebook condense pour le jour J
+4. `docs/05-soutenance/aide-memoire.md` — fiches memo chiffres cles
+5. `docs/05-soutenance/cheatsheet-demo.md` — commandes copy-paste pour la demo live
+6. `docs/05-soutenance/guide-captures-plan-b.md` — plan B si la demo plante
+7. `docs/05-soutenance/questions-jury.md` — 100 Q&A pour se preparer au jury
+
+Les livrables dans `docs/04-livrables/` sont tes sources pour les slides.
 
 ### "Je dois generer les PDF"
 ```bash
