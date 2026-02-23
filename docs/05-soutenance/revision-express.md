@@ -141,51 +141,63 @@ OPEX/an : ~19 340 EUR | TCO 3 ans : ~175 680 EUR | Marge restante : 12 699 EUR
 
 ## 6. DEMO LIVE — 4 tests (5 min)
 
+> Toutes les commandes ci-dessous sont depuis **pve02** (`ssh pve02`).
+
 ### Connexion
 
-```
+```bash
 ssh pve02
-for vmid in 32001 32005 32010 32011 32012 32020 32030; do qm start $vmid; done
+for vmid in 32001 32005 32010 32011 32012 32020 32030; do qm start $vmid 2>/dev/null; done
 ```
-Attendre 3-5 min. Quand `ssh DC01 "echo ok"` repond → tout est pret.
+Attendre 3-5 min. Pret quand ca repond :
+```bash
+sshpass -p 'az4826QS6284**' ssh -o StrictHostKeyChecking=no Administrator@172.16.132.10 "echo ok"
+```
 
 ### Test 1 — QoS VoIP (90s)
 
-**Terminal 1** : `ssh pve02 "iperf3 -s -B 172.16.132.254 -p 5201"`
-**Terminal 2** : `ssh WMS "iperf3 -c 172.16.132.254 -p 5201 -t 15 -b 500M" &`
-**Terminal 2** : `ssh WMS "ping -c 50 -i 0.2 172.16.132.30"`
+**Terminal 1** (reste ouvert) :
+```bash
+iperf3 -s -B 172.16.132.254 -p 5201
+```
+**Terminal 2** :
+```bash
+ssh wmsadmin@172.16.132.20 "iperf3 -c 172.16.132.254 -p 5201 -t 15 -b 500M" &
+ssh wmsadmin@172.16.132.20 "ping -c 30 -i 0.2 172.16.132.30"
+```
 
 **Dire** : "On sature le reseau a 500 Mbps. La latence VoIP reste a 0.1 ms grace a la QoS — priorite 7."
-**Resultat attendu** : latence 0.1ms, 0% perte.
+**Resultat attendu** : latence ~0.16ms, 0% perte. Ctrl+C dans le terminal 1 quand fini.
 
 ### Test 2 — Failover AD (90s)
 
-```
-ssh DC02 "nltest /dsgetdc:lab.local"     # Montre DC01
-ssh pve02 "qm stop 32010"                # Couper DC01
+```bash
+sshpass -p 'az4826QS6284**' ssh Administrator@172.16.132.11 "nltest /dsgetdc:lab.local"
+qm stop 32010
 ```
 Attendre 30s. **Dire** : "DC01 vient de tomber. DC02 doit prendre le relais automatiquement."
-```
-ssh DC02 "nltest /dsgetdc:lab.local"     # Montre DC02 maintenant
-ssh pve02 "qm start 32010"              # Remettre DC01
+```bash
+sshpass -p 'az4826QS6284**' ssh Administrator@172.16.132.11 "nltest /dsgetdc:lab.local"
+qm start 32010
 ```
 
 ### Test 3 — Failover WMS (60s)
 
-```
-ssh WMS "/usr/local/bin/check_wms.sh"                      # Avant : 5 records
-ssh pve02 "qm stop 32020 && sleep 2 && qm start 32020"    # Crash + reboot
+```bash
+ssh wmsadmin@172.16.132.20 "sudo mysql -e 'SELECT * FROM wms_test.inventory;'"
+qm stop 32020 && sleep 2 && qm start 32020
 ```
 Attendre 45s. **Dire** : "Coupure de courant simulee. MySQL doit survivre sans perte."
+```bash
+ssh wmsadmin@172.16.132.20 "sudo mysql -e 'SELECT * FROM wms_test.inventory;'"
 ```
-ssh WMS "/usr/local/bin/check_wms.sh"                      # Apres : 5 records identiques
-```
+Memes 5 lignes, memes timestamps.
 
 ### Test 4 — Tunnel Azure (30s)
 
-```
-ssh DC01 "ping -n 4 10.100.0.10"         # Siege → Azure
-ssh DC-AZURE "ping -n 4 172.16.132.10"   # Azure → siege
+```bash
+sshpass -p 'az4826QS6284**' ssh Administrator@172.16.132.10 "ping -n 4 10.100.0.10"
+sshpass -p 'az4826QS6284**' ssh Administrator@10.100.0.10 "ping -n 4 172.16.132.10"
 ```
 **Dire** : "Communication bidirectionnelle siege-Azure. En prod, c'est du IPsec IKEv2."
 
@@ -194,9 +206,9 @@ ssh DC-AZURE "ping -n 4 172.16.132.10"   # Azure → siege
 | Probleme | Fix |
 |----------|-----|
 | SSH refuse | Attendre 2 min (Windows est lent) |
-| iperf3 "address in use" | `ssh pve02 "pkill iperf3"` |
-| nltest toujours DC01 | Attendre 30s, `ssh DC02 "ipconfig /flushdns"` |
-| Rien ne marche | **Captures d'ecran dans les slides** |
+| iperf3 "address in use" | `pkill iperf3` sur pve02 |
+| nltest toujours DC01 | Attendre 30s de plus |
+| Rien ne marche | Montrer `docs/05-soutenance/images/captures-poc-2026-02-22.txt` |
 
 ---
 

@@ -7,92 +7,47 @@ date: 2026-02-21
 
 > **Navigation soutenance** : [**Revision express**](revision-express.md) · [Briefing](briefing-soutenance.md) · [Plan](plan-presentation.md) · [Carnet](carnet-soutenance.md) · [Aide-memoire](aide-memoire.md) · [Cheatsheet demo](cheatsheet-demo.md) · **Plan B** · [Questions jury](questions-jury.md) · [Fiche Ref](fiche-reference-jourj.md)
 
-> A faire ce weekend (21-22/02). Objectif : avoir des preuves statiques en cas de panne live lundi.
+> Captures realisees le 22/02/2026, 4/4 PASS.
+> Fichier : `images/captures-poc-2026-02-22.txt`
 
-## Methode de capture
+## Captures disponibles
 
-Sur pve02, utiliser `script` pour enregistrer toute la session terminal :
+Les 4 tests ont ete executes et captures le 22/02. Le fichier texte contient les sorties completes :
 
-```bash
-# Lancer l'enregistrement
-script -a capture-demo-$(date +%Y%m%d).log
+| Test | Resultat capture |
+|------|-----------------|
+| QoS VoIP | Latence 0.163ms, 0% perte, queues qVoIP priority 7 |
+| Failover AD | DC02 prend le relais, DNS OK sans DC01 |
+| Failover WMS | 5/5 records identiques apres crash |
+| Tunnel Azure | Ping bidirectionnel + replication 5 partitions OK |
 
-# ... executer les commandes de test ...
+## Refaire les captures (si besoin)
 
-# Arreter l'enregistrement
-exit
-```
-
-Le fichier `.log` contient tout ce qui s'est affiche dans le terminal.
-
-## Les 4 captures a faire
-
-### Capture 1 — QoS VoIP
+Toutes les commandes depuis **pve02** :
 
 ```bash
-# Terminal 1 : serveur iperf3
-iperf3 -s -B 172.16.132.254 -p 5201
-
-# Terminal 2 : saturation + ping
-ssh wmsadmin@172.16.132.20 "iperf3 -c 172.16.132.254 -p 5201 -t 20 -b 500M" &
-ssh wmsadmin@172.16.132.20 "ping -c 100 -i 0.1 172.16.132.30"
-
-# Terminal 1 : stats queues apres le test
+# TEST 1 : QoS
+iperf3 -s -B 172.16.132.254 -p 5201                      # Terminal 1
+ssh wmsadmin@172.16.132.20 "iperf3 -c 172.16.132.254 -p 5201 -t 15 -b 500M" &  # Terminal 2
+ssh wmsadmin@172.16.132.20 "ping -c 30 -i 0.2 172.16.132.30"
 sshpass -p pfsense ssh admin@172.16.132.1 "pfctl -s queue"
-```
 
-**Ce que le jury doit voir :** latence ~0.1 ms, 0% perte, queues qVoIP priority 7.
-
-### Capture 2 — Failover AD
-
-```bash
-# Avant
+# TEST 2 : Failover AD
 sshpass -p 'az4826QS6284**' ssh Administrator@172.16.132.11 "nltest /dsgetdc:lab.local"
-
-# Arret DC01
-qm stop 32010
-sleep 30
-
-# Verification DC02 prend le relais
+qm stop 32010 && sleep 30
 sshpass -p 'az4826QS6284**' ssh Administrator@172.16.132.11 "nltest /dsgetdc:lab.local"
-
-# Remise en route
 qm start 32010
-```
 
-**Ce que le jury doit voir :** nltest retourne `DC02.lab.local` apres arret DC01.
+# TEST 3 : Failover WMS
+ssh wmsadmin@172.16.132.20 "sudo mysql -e 'SELECT * FROM wms_test.inventory;'"
+qm stop 32020 && sleep 2 && qm start 32020 && sleep 45
+ssh wmsadmin@172.16.132.20 "sudo mysql -e 'SELECT * FROM wms_test.inventory;'"
 
-### Capture 3 — Failover WMS
-
-```bash
-# Avant
-ssh wmsadmin@172.16.132.20 "/usr/local/bin/check_wms.sh"
-
-# Arret brutal + reboot
-qm stop 32020 && sleep 2 && qm start 32020
-sleep 45
-
-# Apres
-ssh wmsadmin@172.16.132.20 "/usr/local/bin/check_wms.sh"
-```
-
-**Ce que le jury doit voir :** 5/5 records identiques avant/apres, MySQL running.
-
-### Capture 4 — Tunnel Azure
-
-```bash
-# Ping bidirectionnel
+# TEST 4 : Tunnel Azure
 sshpass -p 'az4826QS6284**' ssh Administrator@172.16.132.10 "ping -n 4 10.100.0.10"
 sshpass -p 'az4826QS6284**' ssh Administrator@10.100.0.10 "ping -n 4 172.16.132.10"
-
-# DNS cross-site
-sshpass -p 'az4826QS6284**' ssh Administrator@172.16.132.10 "nslookup dc-azure.lab.local"
-
-# Replication AD
 sshpass -p 'az4826QS6284**' ssh Administrator@10.100.0.10 "repadmin /syncall /APed"
 ```
-
-**Ce que le jury doit voir :** Reply from, DNS resolu, "no errors" replication.
 
 ## Screenshots
 

@@ -95,28 +95,37 @@ date: 2026-02-18
 
 ---
 
-## Commandes demo (copier-coller)
+## Commandes demo (depuis pve02)
 
 ```bash
-# QoS — Terminal 1 : serveur iperf3
+# --- TEST 1 : QoS ---
+# Terminal 1 :
 iperf3 -s -B 172.16.132.254 -p 5201
+# Terminal 2 :
+ssh wmsadmin@172.16.132.20 "iperf3 -c 172.16.132.254 -p 5201 -t 15 -b 500M" &
+ssh wmsadmin@172.16.132.20 "ping -c 30 -i 0.2 172.16.132.30"
 
-# QoS — Terminal 2 : saturation 500M
-ssh wmsadmin@172.16.132.20 "iperf3 -c 172.16.132.254 -p 5201 -t 15 -b 500M"
-
-# QoS — Terminal 3 : ping IPBX pendant charge
-ssh wmsadmin@172.16.132.20 "ping -c 50 -i 0.2 172.16.132.30"
-
-# Failover AD — couper DC01
-qm stop 32010
-# Attendre 30s puis tester
+# --- TEST 2 : Failover AD ---
 sshpass -p 'az4826QS6284**' ssh Administrator@172.16.132.11 "nltest /dsgetdc:lab.local"
-
-# Remettre DC01
+qm stop 32010
+# Attendre 30s
+sshpass -p 'az4826QS6284**' ssh Administrator@172.16.132.11 "nltest /dsgetdc:lab.local"
 qm start 32010
+
+# --- TEST 3 : Failover WMS ---
+ssh wmsadmin@172.16.132.20 "sudo mysql -e 'SELECT * FROM wms_test.inventory;'"
+qm stop 32020 && sleep 2 && qm start 32020
+# Attendre 45s
+ssh wmsadmin@172.16.132.20 "sudo mysql -e 'SELECT * FROM wms_test.inventory;'"
+
+# --- TEST 4 : Tunnel Azure ---
+sshpass -p 'az4826QS6284**' ssh Administrator@172.16.132.10 "ping -n 4 10.100.0.10"
+sshpass -p 'az4826QS6284**' ssh Administrator@10.100.0.10 "ping -n 4 172.16.132.10"
+sshpass -p 'az4826QS6284**' ssh Administrator@10.100.0.10 "repadmin /syncall /APed"
 ```
 
-> Script demo complet : `docs/05-soutenance/plan-presentation.md` §Partie 3
+> Procedure complete : `docs/05-soutenance/procedure-demo-live.md`
+> Captures plan B : `docs/05-soutenance/images/captures-poc-2026-02-22.txt`
 
 ---
 

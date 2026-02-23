@@ -175,17 +175,20 @@ version: "1.0"
 
 ---
 
-## 7. SCRIPT DEMO (5 min)
+## 7. DEMO LIVE (5 min)
+
+> Toutes les commandes depuis **pve02** (`ssh pve02`).
+> Procedure complete : `docs/05-soutenance/procedure-demo-live.md`
 
 | Etape | Action | Ce qu'on montre | Duree |
 |-------|--------|-----------------|-------|
-| 1 | Ouvrir Proxmox, montrer 7 VMs | "On a reproduit l'archi en lab" | 30s |
-| 2 | iperf3 saturation + ping IPBX | QoS : VoIP stable sous 500Mbps | 90s |
-| 3 | `qm stop 32010` → nltest sur DC02 | Failover AD immediat | 90s |
-| 4 | `qm start 32010` → replication OK | AD se resynchronise | 30s |
-| 5 | Tableau 4/4 PASS | Synthese | 30s |
+| 1 | `qm list` sur pve02 | "On a reproduit l'archi en lab — 7 VMs" | 30s |
+| 2 | iperf3 500M + ping IPBX | QoS : latence 0.16ms, 0% perte sous charge | 90s |
+| 3 | `qm stop 32010` → nltest sur DC02 | Failover AD : DC02 prend le relais | 90s |
+| 4 | crash WMS → mysql SELECT | 5/5 records identiques apres crash | 60s |
+| 5 | ping cross-VLAN + repadmin | Tunnel Azure + replication AD OK | 30s |
 
-**Plan B** : captures d'ecran dans les slides + resultats documentes dans `docs/03-lab-poc/07-tests-validation.md`
+**Plan B** : captures du 22/02 dans `docs/05-soutenance/images/captures-poc-2026-02-22.txt`
 
 ---
 
